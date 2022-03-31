@@ -14,7 +14,8 @@ INCLUDES= -I ./includes
 
 NAME	= ircserv
 
-SRCS_FT		= main.cpp
+SRCS_FT		= main.cpp \
+				server.cpp
 OBJS		= $(SRCS_FT:.cpp=.o)
 
 all: $(NAME)
