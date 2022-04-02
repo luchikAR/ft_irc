@@ -6,11 +6,21 @@
 
 #include "../include/Server.hpp"
 
+#define EXIT_FAILURE 1
+
 int main(int argc, char *argv[])
 {
     if (argc != 3) {
-		std::cout << "Wrong number of arguments" << std::endl;
-		exit(-1);
+		std::cout << "Wrong arguments: use ./ircserv <port> <password>" << std::endl;
+		return (EXIT_FAILURE);
+		// throw Server::ArgumentsException ();
+	}
+
+	int port = atoi(argv[1]);
+
+	if (port < 1024 || port > 49151) {
+		std::cout << "Wrong port! use after 1024 and defore 49151" << std::endl;
+		return (EXIT_FAILURE);
 	}
 
     Server serv(argv[1], argv[2]);
