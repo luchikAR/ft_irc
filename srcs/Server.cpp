@@ -1,10 +1,14 @@
 
 
-#include "Server.hpp"
+#include "../include/Server.hpp"
 
 Server::Server(const char *port, const char *pass) {
     this->port = atoi(port);
 	this->pass = atoi(pass);
+    
+    // потому что worning
+    status = 0;
+    servinfo = 0;
 
     memset(&hints, 0, sizeof(hints)); // убедимся, что структура пуста
     hints.ai_family     = AF_UNSPEC;     // неважно, IPv4 или IPv6
@@ -30,4 +34,5 @@ int Server::start(void)
 
     freeaddrinfo(servinfo); // и освобождаем связанный список
     */
+   return (0);
 }

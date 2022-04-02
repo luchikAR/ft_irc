@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "Server.hpp"
+#include "../include/Server.hpp"
 
 int main(int argc, char *argv[])
 {
