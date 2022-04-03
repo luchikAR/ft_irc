@@ -14,6 +14,18 @@
 
 #define BACKLOG 10
 
+std::string g_cmd_name[10] = {"NICK",
+									  "PASS",
+									  "USER",
+									  "SERVER",
+									  "JOIN",
+									  "QUIT",
+									  "KICK",
+									  "PRIVMSG",
+									  "CONNECT",
+									  "KILL",
+									  };
+
 class Server {
 private:
 	const char*	port_ch; // тест для структуры addrinfo
@@ -29,15 +41,6 @@ public:
 	~Server();
 
     int start(void);
-
-    // class ArgumentsException: public std::exception
-	// {
-	// 	public:
-	// 		virtual const char* what() const throw()
-	// 		{ 
-	// 			return ("Wrong arguments: <port> <password>");
-	// 		}
-	// };
 };
 
 

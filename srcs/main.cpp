@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
     if (argc != 3) {
 		std::cout << "Wrong arguments: use ./ircserv <port> <password>" << std::endl;
 		return (EXIT_FAILURE);
-		// throw Server::ArgumentsException ();
 	}
 
 	int port = atoi(argv[1]);
