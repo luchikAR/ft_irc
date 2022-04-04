@@ -11,14 +11,14 @@
 int main(int argc, char *argv[])
 {
     if (argc != 3) {
-		std::cout << "Wrong arguments: use ./ircserv <port> <password>" << std::endl;
+		std::cout << RED << "Wrong arguments: use ./ircserv <port> <password>" << RESET << std::endl;
 		return (EXIT_FAILURE);
 	}
 
 	int port = atoi(argv[1]);
 
 	if (port < 1024 || port > 49151) {
-		std::cout << "Wrong port! use after 1024 and defore 49151" << std::endl;
+		std::cout << RED << "Wrong port! use after 1024 and defore 49151" << RESET << std::endl;
 		return (EXIT_FAILURE);
 	}
 
