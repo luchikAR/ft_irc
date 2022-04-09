@@ -3,14 +3,23 @@
 #include "../include/Server.hpp"
 
 Server::Server(const char *port, const char *pass) {
-    this->port = atoi(port);
-	this->pass = atoi(pass);
-    this->port_ch = port;
+    this->_port = atoi(port);
+	this->_pass = atoi(pass);
+    this->_port_ch = port;
 
     memset(&hints, 0, sizeof(hints));   // убедимся, что структура пуста
     hints.ai_family     = AF_UNSPEC;    // неважно, IPv4 или IPv6
     hints.ai_socktype   = SOCK_STREAM;  // TCP stream-sockets
     hints.ai_flags      = AI_PASSIVE;   // заполните мой IP-адрес за меня
+
+    // хардкод
+    _g_cmd_name[0] = "NICK";
+    _g_cmd_name[1] = "PASS";
+    _g_cmd_name[2] = "USER";
+    _g_cmd_name[3] = "NOTICE";
+    _g_cmd_name[4] = "JOIN";
+    _g_cmd_name[5] = "KICK";
+    _g_cmd_name[6] = "PRIVMSG";
 }
 
 Server::~Server() {
@@ -19,17 +28,17 @@ Server::~Server() {
 }
 
 void Server::_print_error(std::string str) {
-    std::cerr << RED << "[SERVER]: " << str << RESET << std::endl;
+    std::cerr << CYAN << "[SERVER]: " << RED << str << RESET << "\r\n";
 }
 
 void Server::_system_mess(std::string str) {
-    std::cerr << CYAN << "[SERVER]: " << str << RESET << std::endl;
+    std::cerr << CYAN << "[SERVER]: " << GREEN << str << RESET << "\r\n";
 }
 
 int Server::start(void)
 {
     // servinfo указывает на связанный список на одну или больше структуру <i>addrinfo</i>
-    int status = getaddrinfo(NULL, this->port_ch, &hints, &servinfo);
+    int status = getaddrinfo(NULL, this->_port_ch, &hints, &servinfo);
     if (status != 0) {
         std::cerr << "getaddrinfo: " << gai_strerror(status) << std::endl;
         exit (1);
@@ -68,11 +77,11 @@ int Server::start(void)
     // --------------------------------
 
     char buf[4096];
-    
+
     while (true)
     {
         memset(buf, 0, 4096);
- 
+
         // Wait for client to send data
         int bytesReceived = recv(clientSocket, buf, 4096, 0);
         if (bytesReceived == -1)
@@ -80,7 +89,10 @@ int Server::start(void)
             _print_error("Error in recv(). Quitting");
             break;
         }
- 
+        // Server.registered(buf, User);
+        // должен быть создан юзер
+        // в его поля занашу три комады
+        // - правильный пароль и не занятый ник
         if (bytesReceived == 0)
         {
             _print_error("Client disconnected ");
