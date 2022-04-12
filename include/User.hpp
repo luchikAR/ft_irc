@@ -15,22 +15,35 @@
 #define CYAN	"\033[1;36m"
 #define RESET	"\033[0m"
 
+#define MESSAGE_SIZE 1024
+
+/*
+** ====================================================================
+** хранит даныне подключившегося клиента.
+** ====================================================================
+*/
 
 class User {
 private:
+    std::string _pass;
+    std::string _nick;
+    std::string user_name;
+    
+    std::string _hostname; // зачем?)
+    std::string _servername; // зачем?)
+    std::string message;
 
-    std::string   _pass, _nick, _user_name;
+    int         _socket_user;
+    int         _status;
 
-    // int                 socket_fd;     // проверка возвращаемого рез.
-    // struct addrinfo     hints;
-    // struct addrinfo     *servinfo;  // указатель на результаты
-
-public:
 	User();
+	User(const User& copy);
+	User	&operator=(const User& other);
+public:
+	User(int sockfd, const std::string &host, std::string &servername);
 	~User();
 
-    int setNick(char* nick);
-    int setUsername(char* username);
+    int readMessage();
 };
 
 

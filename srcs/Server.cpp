@@ -2,6 +2,13 @@
 
 #include "../include/Server.hpp"
 
+bool	work = true; // для сигналов
+
+void	Server::_sigHandler(int signum) {
+	(void)signum;
+	work = false;
+}
+
 Server::Server(const char *port, const char *pass) {
     this->_port = atoi(port);
 	this->_pass = atoi(pass);
@@ -23,7 +30,8 @@ Server::Server(const char *port, const char *pass) {
 }
 
 Server::~Server() {
-    // пока хз, может картинку вывести :)
+    // Очистить _users массив 
+    // картинку вывести :)
     void();
 }
 
@@ -37,22 +45,34 @@ void Server::_system_mess(std::string str) {
 
 int Server::start(void)
 {
-    // servinfo указывает на связанный список на одну или больше структуру <i>addrinfo</i>
+/*
+*************************************************************
+** Технически стартуем сервер: Создаём, биндим и слушаем сокет
+*************************************************************
+*/
+
     int status = getaddrinfo(NULL, this->_port_ch, &hints, &servinfo);
     if (status != 0) {
         std::cerr << "getaddrinfo: " << gai_strerror(status) << std::endl;
-        exit (1);
+        exit (EXIT_FAILURE);
     }
     
     this->socket_fd = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
     if (this->socket_fd == -1) {
         _print_error("error on server: socket");
-        exit (1);
+        exit (EXIT_FAILURE);
     }
+    // для перезапуска и нового использования того же порта
+	const int trueFlag = 1;
+	if (setsockopt(this->socket_fd , SOL_SOCKET, SO_REUSEADDR, &trueFlag, sizeof(int)) < 0)
+	{
+       _print_error("setsockopt failed");
+		exit(EXIT_FAILURE);
+	}
     if ( bind(this->socket_fd, servinfo->ai_addr, servinfo->ai_addrlen) == -1 ) {
         close(this->socket_fd);
         _print_error("error on server: bind");
-        exit (1);
+        exit (EXIT_FAILURE);
     }
     freeaddrinfo(servinfo); // и освобождаем связанный список
     
@@ -60,48 +80,96 @@ int Server::start(void)
     {
         close(this->socket_fd);
         _print_error("error on server: listen");
-        exit (1);
+        exit (EXIT_FAILURE);
     }
+/*
+*****************************************************************
+** O_NONBLOCK
+** (если возможно, то файл открывается в режиме non-blocking. 
+** Ни open, ни другие последующие операции над возвращаемым описателем файла не заставляют вызывающий процесс ждать.
+** Этот режим не оказывает никакого действия на не-FIFO файлы.);
+*****************************************************************
+*/
+	fcntl(this->socket_fd, F_SETFL, O_NONBLOCK);
     _system_mess("server: waiting for connections…");
 
-    struct sockaddr_storage their_addr; // только дял accept ???
-    socklen_t addr_size = sizeof (their_addr);
-    
-    int clientSocket = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
-    if (clientSocket == -1) {
-        _print_error("error on server: accept");
-        exit (1);
-    }
-    // ---------------------------------
-    // bbtcpserver.cpp не понятно зачем нужная часть
-    // --------------------------------
+/* 
+************************************************************
+** Начинаем работать с сообщением от пользователей
+************************************************************
+*/
 
+	signal(SIGINT, sigHandler);
     char buf[4096];
 
-    while (true)
+    while (work)
     {
-        memset(buf, 0, 4096);
 
-        // Wait for client to send data
-        int bytesReceived = recv(clientSocket, buf, 4096, 0);
-        if (bytesReceived == -1)
+/* 
+************************************************************
+** grabConnection
+************************************************************
+*/
+        struct sockaddr_storage their_addr; // только для accept
+        socklen_t addr_size = sizeof (their_addr);
+        int clientSocket = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
+        if (clientSocket >= 0)
         {
+            char	host[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &(sockaddr.sin_addr), host, INET_ADDRSTRLEN);
+            struct pollfd	pfd;
+            pfd.fd = clientSocket;
+            pfd.events = POLLIN;
+            pfd.revents = 0;
+            this->_usersFD.push_back(pfd);
+            this->_users.push_back(new User(clientSocket, host, name));
+        }
+/* 
+************************************************************
+** processMessages
+************************************************************
+*/
+
+// Убрать _usersFD.data() так как это C++ 11
+        int	pret = poll(_usersFD.data(), _usersFD.size(), timeout);
+        std::vector<int>	toErase;        
+// протестить > 0, так как ещё и меньше может вернуть
+        if (pret != 0)
+        {
+            for (size_t i = 0; i < _usersFD.size(); i++)
+            {
+                if (_usersFD[i].revents & POLLIN)
+                {
+                    if (_users[i]->readMessage() == DISCONNECT)
+                        _users[i]->setFlag(BREAKCONNECTION);
+                    else if (hadleMessages(*(_users[i])) == DISCONNECT)
+                        _users[i]->setFlag(BREAKCONNECTION);
+                }
+                _usersFD[i].revents = 0;
+            }
+        }
+/* 
+************************************************************
+** checkConnectionWithUsers
+************************************************************
+*/
+        memset(buf, 0, 4096);
+        int bytesReceived = recv(clientSocket, buf, 4096, 0);
+        if (bytesReceived == -1) {
             _print_error("Error in recv(). Quitting");
+            break;
+        }
+        if (bytesReceived == 0) {
+            _print_error("Client disconnected ");
             break;
         }
         // Server.registered(buf, User);
         // должен быть создан юзер
         // в его поля занашу три комады
         // - правильный пароль и не занятый ник
-        if (bytesReceived == 0)
-        {
-            _print_error("Client disconnected ");
-            break;
-        }
  
-        std::cout << std::string(buf, 0, bytesReceived) << std::endl;
- 
-        // Echo message back to client
+        _system_mess(std::string(buf, 0, bytesReceived));
+        
         send(clientSocket, buf, bytesReceived + 1, 0);
     }
     close(clientSocket);

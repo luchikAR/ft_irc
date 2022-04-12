@@ -11,10 +11,12 @@
 #include <string.h> // memset()
 #include <stdlib.h> //exit()
 #include <unistd.h> // close()
-
+#include <vector>
+#include <poll.h>
+#include <fcntl.h> // для работы с флагами файла
+#include <csignal>
 
 #include "../include/User.hpp"
-#define BACKLOG 10
 #define COUT_COMMAND 7
 
 #define RED		"\033[1;31m"
@@ -35,21 +37,31 @@
 
 class Server {
 private:
-	
-	std::string _g_cmd_name[COUT_COMMAND]; // команды которые мы обрабатываем
-	const char*	_port_ch; 			// тест для структуры addrinfo
-    int     	_port;
-    int     	_pass;
-
-	// map<std::string, User> 	user;	// список пользователей, где string это имя пользователя
-    int                 socket_fd;     // проверка возвращаемого рез.
+/* 
+************************************************************
+** Основные настройки сервера
+************************************************************
+*/
+	std::vector<User *>			_users;
+	std::vector<struct pollfd>	_usersFD;
+	std::string					_g_cmd_name[COUT_COMMAND];
+	const char*					_port_ch;
+    int     					_port;
+    int     					_pass;
+/* 
+************************************************************
+** Данные для подключения
+************************************************************
+*/
+    int                 socket_fd;
     struct addrinfo     hints;
-    struct addrinfo     *servinfo;  // указатель на результаты
+    struct addrinfo     *servinfo;
 
 	void _print_error(std::string str);
 	void _system_mess(std::string str);
+	void _sigHandler(int signum);
 public:
-	Server(const char *, const char *);
+	Server(const char *port, const char *pass);
 	~Server();
 
     int start(void);
