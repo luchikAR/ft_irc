@@ -17,6 +17,19 @@
 
 #define MESSAGE_SIZE 1024
 
+#define REGISTERED		1
+#define BREAKCONNECTION	2
+#define	DISCONNECT  -2
+
+struct flagUser
+{
+    bool break_connect;
+
+    flagUser(): break_connect(0) 
+    {}
+};
+
+
 /*
 ** ====================================================================
 ** хранит даныне подключившегося клиента.
@@ -29,9 +42,11 @@ private:
     std::string _nick;
     std::string user_name;
     
+    // от levensta
     std::string _hostname; // зачем?)
     std::string _servername; // зачем?)
     std::string message;
+    flagUser    _flagUser;
 
     int         _socket_user;
     int         _status;
@@ -43,7 +58,15 @@ public:
 	User(int sockfd, const std::string &host, std::string &servername);
 	~User();
 
-    int readMessage();
+    int     readMessage();
+
+    // setters
+    void    setFlag(int _flag);
+
+    // getters
+    const std::string	&getMessages() const;
+    struct flagUser		getFlags() const;
+	int				    getSockfd() const;
 };
 
 

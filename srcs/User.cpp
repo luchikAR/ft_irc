@@ -3,7 +3,7 @@
 
 
 User::User(int sockfd, const std::string &host, std::string &servername) :
-    _socket_user(sockfd), _hostname(host), _servername(servername) { }
+    _hostname(host), _servername(servername), _socket_user(sockfd) { }
 
 User::~User() { }
 
@@ -30,5 +30,23 @@ int		User::readMessage()
 		text.replace(text.find("\r\n"), 2, "\n");
 	// if (text.size() > 1)
 	// 	messages = split(text, '\n', true);
+	this->message = text;
 	return 0;
+}
+
+void    User::setFlag(int _flag) {
+	if (_flag == BREAKCONNECTION)
+		this->_flagUser.break_connect = true;
+}
+
+const std::string	&User::getMessages() const {
+	return (this->message);
+}
+
+struct flagUser	User::getFlags() const {
+	return (this->_flagUser);
+}
+
+int	User::getSockfd() const {
+	return(this->_socket_user);
 }

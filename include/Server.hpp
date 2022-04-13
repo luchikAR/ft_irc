@@ -15,9 +15,11 @@
 #include <poll.h>
 #include <fcntl.h> // для работы с флагами файла
 #include <csignal>
+#include <arpa/inet.h> // переводет ip в имя
 
 #include "../include/User.hpp"
 #define COUT_COMMAND 7
+#define TIMEOUT 1000 // 1 секунда
 
 #define RED		"\033[1;31m"
 #define GREEN	"\033[1;32m"
@@ -60,11 +62,17 @@ private:
 	void _print_error(std::string str);
 	void _system_mess(std::string str);
 	void _sigHandler(int signum);
+
+	Server();
+	Server(const Server& copy);
+	Server	&operator=(const Server& other);
 public:
 	Server(const char *port, const char *pass);
 	~Server();
 
-    int start(void);
+    int		start(void);
+	int		hadleMessages(User &user);
+	void	deleteBrokenConnections();
 };
 
 

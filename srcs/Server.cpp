@@ -4,7 +4,7 @@
 
 bool	work = true; // для сигналов
 
-void	Server::_sigHandler(int signum) {
+void    sigHandler(int signum) {
 	(void)signum;
 	work = false;
 }
@@ -42,6 +42,17 @@ void Server::_print_error(std::string str) {
 void Server::_system_mess(std::string str) {
     std::cerr << CYAN << "[SERVER]: " << GREEN << str << RESET << "\r\n";
 }
+
+int	Server::hadleMessages(User &user)
+{
+    // обработка сообщения makeCommand
+    // Тут парсим и вызываем нужную команду.
+    _system_mess(user.getMessages());
+        
+    // send(clientSocket, buf, bytesReceived + 1, 0);
+	return (0);
+}
+
 
 int Server::start(void)
 {
@@ -100,29 +111,28 @@ int Server::start(void)
 */
 
 	signal(SIGINT, sigHandler);
-    char buf[4096];
 
     while (work)
     {
-
 /* 
 ************************************************************
 ** grabConnection
 ************************************************************
 */
-        struct sockaddr_storage their_addr; // только для accept
+        struct sockaddr_in their_addr; // только для accept (вынести в класс?)
         socklen_t addr_size = sizeof (their_addr);
         int clientSocket = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
         if (clientSocket >= 0)
         {
             char	host[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &(sockaddr.sin_addr), host, INET_ADDRSTRLEN);
+            inet_ntop(AF_INET, &(their_addr.sin_addr), host, INET_ADDRSTRLEN);
             struct pollfd	pfd;
             pfd.fd = clientSocket;
             pfd.events = POLLIN;
             pfd.revents = 0;
             this->_usersFD.push_back(pfd);
-            this->_users.push_back(new User(clientSocket, host, name));
+            std::string name("зачем?"); // servername
+            this->_users.push_back(new User(clientSocket, host, name) );
         }
 /* 
 ************************************************************
@@ -131,7 +141,8 @@ int Server::start(void)
 */
 
 // Убрать _usersFD.data() так как это C++ 11
-        int	pret = poll(_usersFD.data(), _usersFD.size(), timeout);
+// &_usersFD
+        int	pret = poll(_usersFD.data(), _usersFD.size(), TIMEOUT);
         std::vector<int>	toErase;        
 // протестить > 0, так как ещё и меньше может вернуть
         if (pret != 0)
@@ -153,26 +164,42 @@ int Server::start(void)
 ** checkConnectionWithUsers
 ************************************************************
 */
-        memset(buf, 0, 4096);
-        int bytesReceived = recv(clientSocket, buf, 4096, 0);
-        if (bytesReceived == -1) {
-            _print_error("Error in recv(). Quitting");
-            break;
-        }
-        if (bytesReceived == 0) {
-            _print_error("Client disconnected ");
-            break;
-        }
-        // Server.registered(buf, User);
-        // должен быть создан юзер
-        // в его поля занашу три комады
-        // - правильный пароль и не занятый ник
- 
-        _system_mess(std::string(buf, 0, bytesReceived));
-        
-        send(clientSocket, buf, bytesReceived + 1, 0);
+    // проверка соединения посылая ping
+/* 
+************************************************************
+** deleteBrokenConnections
+************************************************************
+*/
+    deleteBrokenConnections();
+/* 
+************************************************************
+** deleteEmptyChannels
+************************************************************
+*/
+    // deleteEmptyChannels();
     }
-    close(clientSocket);
     
    return (0);
+}
+
+void	Server::deleteBrokenConnections()
+{
+	for (size_t i = 0; i < _users.size(); ++i)
+	{
+		if (_users[i]->getFlags().break_connect == true)
+		{
+			// this->nicknamesHistory.addUser(*(_users[i]));
+			// notifyUsers(*(_users[i]), ":" + _users[i]->getPrefix() + " QUIT :" + _users[i]->getQuitMessage() + "\n");
+			close(_users[i]->getSockfd());
+			// std::map<std::string, Channel *>::iterator	beg = channels.begin();
+			// std::map<std::string, Channel *>::iterator	end = channels.end();
+			// for (; beg != end; ++beg)
+			// 	if ((*beg).second->containsNickname(_users[i]->getNickname()))
+			// 		(*beg).second->disconnect(*(_users[i]));
+			delete _users[i];
+			_users.erase(_users.begin() + i);
+			_usersFD.erase(_usersFD.begin() + i);
+			--i;
+		}
+	}
 }
