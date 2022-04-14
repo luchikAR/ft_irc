@@ -27,7 +27,8 @@ int		User::readMessage()
 	if (bytesRead == 0)
 		return (DISCONNECT);
 	while (text.find("\r\n") != std::string::npos)
-		text.replace(text.find("\r\n"), 2, "\n");
+		// text.replace(text.find("\r\n"), 2, "\n");
+		text.replace(text.find("\r\n"), 2, " ");
 	// if (text.size() > 1)
 	// 	messages = split(text, '\n', true);
 	this->message = text;
@@ -49,4 +50,19 @@ struct flagUser	User::getFlags() const {
 
 int	User::getSockfd() const {
 	return(this->_socket_user);
+}
+
+const std::string	&User::getUsername() const {
+	return (this->_user_name);
+}
+
+const std::string	&User::getServername() const {
+	return(this->_servername);
+}
+const std::string	&User::getNickname() const {
+	return(this->_nick);
+}
+
+const std::string	&User::getRealname() const {
+	return(this->_real_name);
 }

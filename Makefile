@@ -10,7 +10,10 @@ NAME= ircserv
 
 SOURCEFILES=	main.cpp \
 				Server.cpp \
-				User.cpp
+				User.cpp \
+				Channel.cpp \
+				commands/split.cpp \
+				commands/error_modul.cpp
 
 #BOTFOLDER = bot/
 

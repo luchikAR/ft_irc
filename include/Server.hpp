@@ -18,12 +18,17 @@
 #include <arpa/inet.h> // переводет ip в имя
 
 #include "../include/User.hpp"
+#include "../include/utils.hpp"
+#include "../include/Channel.hpp"
+#include "../include/error_modul.hpp"
+
 #define COUT_COMMAND 7
 #define TIMEOUT 1000 // 1 секунда
 
 #define RED		"\033[1;31m"
 #define GREEN	"\033[1;32m"
 #define YELLOW	"\033[1;33m"
+#define PURPLE	"\033[1;35m"
 #define CYAN	"\033[1;36m"
 #define RESET	"\033[0m"
 
@@ -58,10 +63,16 @@ private:
     int                 socket_fd;
     struct addrinfo     hints;
     struct addrinfo     *servinfo;
+	
+	void	_initializationServ();
+	void	_sigHandler(int signum);
+	void	deleteBrokenConnections();
+	void    _ft_correct(std::vector<std::string> *str);
+	int		makeCommand(User &user);
 
-	void _print_error(std::string str);
-	void _system_mess(std::string str);
-	void _sigHandler(int signum);
+	void	_print_error(std::string str) const;
+	void	_system_mess(std::string str) const;
+	void	_client_mess(std::string str) const;
 
 	Server();
 	Server(const Server& copy);
@@ -71,8 +82,6 @@ public:
 	~Server();
 
     int		start(void);
-	int		hadleMessages(User &user);
-	void	deleteBrokenConnections();
 };
 
 

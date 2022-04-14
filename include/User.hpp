@@ -1,5 +1,3 @@
-
-
 #ifndef USER_HPP
 #define USER_HPP
 
@@ -23,12 +21,12 @@
 
 struct flagUser
 {
+    bool registered;
     bool break_connect;
 
-    flagUser(): break_connect(0) 
+    flagUser(): registered(0), break_connect(0)
     {}
 };
-
 
 /*
 ** ====================================================================
@@ -40,7 +38,8 @@ class User {
 private:
     std::string _pass;
     std::string _nick;
-    std::string user_name;
+    std::string _user_name;
+    std::string _real_name;
     
     // от levensta
     std::string _hostname; // зачем?)
@@ -58,15 +57,19 @@ public:
 	User(int sockfd, const std::string &host, std::string &servername);
 	~User();
 
-    int     readMessage();
+    int                 readMessage();
 
     // setters
-    void    setFlag(int _flag);
+    void                setFlag(int _flag);
 
     // getters
     const std::string	&getMessages() const;
     struct flagUser		getFlags() const;
 	int				    getSockfd() const;
+	const std::string	&getUsername() const;
+	const std::string	&getServername() const;
+	const std::string	&getNickname() const;
+	const std::string	&getRealname() const;
 };
 
 

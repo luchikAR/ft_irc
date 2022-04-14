@@ -35,33 +35,63 @@ Server::~Server() {
     void();
 }
 
-void Server::_print_error(std::string str) {
+void Server::_print_error(std::string str) const {
     std::cerr << CYAN << "[SERVER]: " << RED << str << RESET << "\r\n";
 }
 
-void Server::_system_mess(std::string str) {
+void Server::_system_mess(std::string str) const {
     std::cerr << CYAN << "[SERVER]: " << GREEN << str << RESET << "\r\n";
 }
 
-int	Server::hadleMessages(User &user)
+void Server::_client_mess(std::string str) const {
+    std::cerr << PURPLE << "[CLIENT]: " << RESET << str << "\r\n";
+}
+
+// убирает сигналы типа (^D) (PA^DSS) в сообщении как просит сабджект.
+void    Server::_ft_correct(std::vector<std::string> *str) {
+    std::vector<std::string>::iterator i = str->begin();
+    for ( ; i < str->end(); i++) {
+        for (char comp = 1; comp <= 31; comp++) {
+            while (i->find(comp) != std::string::npos)
+		        i->replace(i->find(comp), 1, "");
+        }
+    }
+}
+
+int	Server::makeCommand(User &user)
 {
-    // обработка сообщения makeCommand
-    // Тут парсим и вызываем нужную команду.
-    _system_mess(user.getMessages());
-        
+    std::vector<std::string> comm = split(user.getMessages());
+    _ft_correct(&comm);
+    _client_mess(user.getMessages()); // для сервера
+    // std::cout << "comm = '" << comm[0] << "' " << "len = " << comm[0].length() << std::endl;
+
+	if (user.getFlags().registered == false && comm[0] != "QUIT" && comm[0] != "PASS" \
+			&& comm[0] != "USER" && comm[0] != "NICK")
+	    sendError(user, ERR_NOTREGISTERED);
+	// else
+	// {
+	// 	try
+	// 	{
+	// 		int ret = (this->*(commands.at(msg.getCommand())))(msg, user);
+	// 		if (ret == DISCONNECT)
+	// 			return (DISCONNECT);
+	// 	}
+	// 	catch(const std::exception& e)
+	// 	{
+	// 		sendError(user, ERR_UNKNOWNCOMMAND, msg.getCommand());
+	// 	}
+	// }
     // send(clientSocket, buf, bytesReceived + 1, 0);
 	return (0);
 }
 
-
-int Server::start(void)
-{
 /*
 *************************************************************
 ** Технически стартуем сервер: Создаём, биндим и слушаем сокет
 *************************************************************
 */
-
+void    Server::_initializationServ()
+{
     int status = getaddrinfo(NULL, this->_port_ch, &hints, &servinfo);
     if (status != 0) {
         std::cerr << "getaddrinfo: " << gai_strerror(status) << std::endl;
@@ -93,93 +123,6 @@ int Server::start(void)
         _print_error("error on server: listen");
         exit (EXIT_FAILURE);
     }
-/*
-*****************************************************************
-** O_NONBLOCK
-** (если возможно, то файл открывается в режиме non-blocking. 
-** Ни open, ни другие последующие операции над возвращаемым описателем файла не заставляют вызывающий процесс ждать.
-** Этот режим не оказывает никакого действия на не-FIFO файлы.);
-*****************************************************************
-*/
-	fcntl(this->socket_fd, F_SETFL, O_NONBLOCK);
-    _system_mess("server: waiting for connections…");
-
-/* 
-************************************************************
-** Начинаем работать с сообщением от пользователей
-************************************************************
-*/
-
-	signal(SIGINT, sigHandler);
-
-    while (work)
-    {
-/* 
-************************************************************
-** grabConnection
-************************************************************
-*/
-        struct sockaddr_in their_addr; // только для accept (вынести в класс?)
-        socklen_t addr_size = sizeof (their_addr);
-        int clientSocket = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
-        if (clientSocket >= 0)
-        {
-            char	host[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &(their_addr.sin_addr), host, INET_ADDRSTRLEN);
-            struct pollfd	pfd;
-            pfd.fd = clientSocket;
-            pfd.events = POLLIN;
-            pfd.revents = 0;
-            this->_usersFD.push_back(pfd);
-            std::string name("зачем?"); // servername
-            this->_users.push_back(new User(clientSocket, host, name) );
-        }
-/* 
-************************************************************
-** processMessages
-************************************************************
-*/
-
-// Убрать _usersFD.data() так как это C++ 11
-// &_usersFD
-        int	pret = poll(_usersFD.data(), _usersFD.size(), TIMEOUT);
-        std::vector<int>	toErase;        
-// протестить > 0, так как ещё и меньше может вернуть
-        if (pret != 0)
-        {
-            for (size_t i = 0; i < _usersFD.size(); i++)
-            {
-                if (_usersFD[i].revents & POLLIN)
-                {
-                    if (_users[i]->readMessage() == DISCONNECT)
-                        _users[i]->setFlag(BREAKCONNECTION);
-                    else if (hadleMessages(*(_users[i])) == DISCONNECT)
-                        _users[i]->setFlag(BREAKCONNECTION);
-                }
-                _usersFD[i].revents = 0;
-            }
-        }
-/* 
-************************************************************
-** checkConnectionWithUsers
-************************************************************
-*/
-    // проверка соединения посылая ping
-/* 
-************************************************************
-** deleteBrokenConnections
-************************************************************
-*/
-    deleteBrokenConnections();
-/* 
-************************************************************
-** deleteEmptyChannels
-************************************************************
-*/
-    // deleteEmptyChannels();
-    }
-    
-   return (0);
 }
 
 void	Server::deleteBrokenConnections()
@@ -203,3 +146,89 @@ void	Server::deleteBrokenConnections()
 		}
 	}
 }
+
+int Server::start(void)
+{
+    // Создаём, биндим и слушаем сокет
+	_initializationServ();
+
+    // чтобы не блокировать сокет сервера
+	fcntl(this->socket_fd, F_SETFL, O_NONBLOCK);
+    _system_mess("server: waiting for connections…");
+
+	signal(SIGINT, sigHandler);
+/* 
+************************************************************
+** Начинаем работать с сообщением от пользователей
+************************************************************
+*/
+    while (work)
+    {
+        /* 
+        ************************************************************
+        ** grabConnection
+        ************************************************************
+        */
+        struct sockaddr_in their_addr; // только для accept (вынести в класс?)
+        socklen_t addr_size = sizeof (their_addr);
+        int clientSocket = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
+        if (clientSocket >= 0)
+        {
+            char	host[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &(their_addr.sin_addr), host, INET_ADDRSTRLEN);
+            struct pollfd	pfd;
+            pfd.fd = clientSocket;
+            pfd.events = POLLIN;
+            pfd.revents = 0;
+            this->_usersFD.push_back(pfd);
+            std::string name("ft_irc"); // servername
+            this->_users.push_back(new User(clientSocket, host, name) );
+        }
+        /* 
+        ************************************************************
+        ** processMessages
+        ************************************************************
+        */
+
+        // Убрать _usersFD.data() так как это C++ 11
+        // &_usersFD
+        int	pret = poll(_usersFD.data(), _usersFD.size(), TIMEOUT);
+        std::vector<int>	toErase;        
+        // протестить > 0, так как ещё и меньше может вернуть
+        if (pret != 0)
+        {
+            for (size_t i = 0; i < _usersFD.size(); i++)
+            {
+                if (_usersFD[i].revents & POLLIN)
+                {
+                    if (_users[i]->readMessage() == DISCONNECT)
+                        _users[i]->setFlag(BREAKCONNECTION);
+                    else if (makeCommand(*(_users[i])) == DISCONNECT)
+                        _users[i]->setFlag(BREAKCONNECTION);
+                }
+                _usersFD[i].revents = 0;
+            }
+        }
+        /* 
+        ************************************************************
+        ** checkConnectionWithUsers
+        ************************************************************
+        */
+            // проверка соединения посылая ping
+        /* 
+        ************************************************************
+        ** deleteBrokenConnections
+        ************************************************************
+        */
+        deleteBrokenConnections();
+        /* 
+        ************************************************************
+        ** deleteEmptyChannels
+        ************************************************************
+        */
+        // deleteEmptyChannels();
+    }
+    
+   return (0);
+}
+
