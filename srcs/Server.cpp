@@ -51,7 +51,7 @@ void Server::_client_mess(std::string str) const {
     std::cerr << PURPLE << "[CLIENT]: " << RESET << str << "\r\n";
 }
 
-// убирает сигналы типа (^D) (PA^DSS) в сообщении как просит сабджект.
+// убирает сигналы типа (^D) (PA^https://github.com/levensta/IRC-ServerDSS) в сообщении как просит сабджект.
 void    Server::_ft_correct(std::vector<std::string> *str) {
     std::vector<std::string>::iterator i = str->begin();
     for ( ; i < str->end(); i++) {
