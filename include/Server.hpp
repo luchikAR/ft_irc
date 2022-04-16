@@ -21,7 +21,7 @@
 #include "../include/User.hpp"
 #include "../include/utils.hpp"
 #include "../include/Channel.hpp"
-#include "../include/send_modul.hpp"
+#include "../include/error_modul.hpp"
 
 #define COUT_COMMAND 7
 #define TIMEOUT 1000 // 1 секунда
@@ -33,7 +33,6 @@
 #define CYAN	"\033[1;36m"
 #define RESET	"\033[0m"
 
-class Server;
 
 typedef  int (Server::*Method) (const std::vector<std::string> &, User &);
 

@@ -58,7 +58,6 @@ public:
 	~User();
 
     int                 readMessage();
-	void	    	    sendMessage(const std::string &msg) const;
 
     // setters
     void                setFlag(int _flag);
@@ -71,7 +70,6 @@ public:
 	const std::string	&getServername() const;
 	const std::string	&getNickname() const;
 	const std::string	&getRealname() const;
-    std::string         getPrefix() const;
 };
 
 
