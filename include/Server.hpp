@@ -69,6 +69,17 @@ private:
 	void	_system_mess(std::string str) const;
 	void	_client_mess(std::string str) const;
 
+	// command
+
+	int				passCmd(const std::vector<std::string> &msg, User &user);
+	int				nickCmd(const std::vector<std::string> &msg, User &user);
+	int				userCmd(const std::vector<std::string> &msg, User &user);
+	int				quitCmd(const std::vector<std::string> &msg, User &user);
+	int				privmsgCmd(const std::vector<std::string> &msg, User &user);
+	int				noticeCmd(const std::vector<std::string> &msg, User &user);
+	int				joinCmd(const std::vector<std::string> &msg, User &user);
+	int				kickCmd(const std::vector<std::string> &msg, User &user);
+
 	Server();
 	Server(const Server& copy);
 	Server	&operator=(const Server& other);
