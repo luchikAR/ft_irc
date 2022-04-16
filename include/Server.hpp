@@ -12,6 +12,7 @@
 #include <stdlib.h> //exit()
 #include <unistd.h> // close()
 #include <vector>
+#include <map>
 #include <poll.h>
 #include <fcntl.h> // для работы с флагами файла
 #include <csignal>
@@ -33,14 +34,7 @@
 #define RESET	"\033[0m"
 
 
-	// std::string _g_cmd_name[COUT_COMMAND] = {	"NICK",
-	// 								  		"PASS",
-	// 								  		"USER",
-	// 								  		"NOTICE",
-	// 								  		"JOIN",
-	// 								  		"KICK",
-	// 								  		"PRIVMSG"
-	// 								  	};
+typedef  int (Server::*Method) (const std::vector<std::string> &, User &);
 
 class Server {
 private:
@@ -49,12 +43,13 @@ private:
 ** Основные настройки сервера
 ************************************************************
 */
-	std::vector<User *>			_users;
-	std::vector<struct pollfd>	_usersFD;
-	std::string					_g_cmd_name[COUT_COMMAND];
-	const char*					_port_ch;
-    int     					_port;
-    int     					_pass;
+	std::vector<User *>				_users;
+	std::vector<struct pollfd>		_usersFD;
+	const char*						_port_ch;
+    int     						_port;
+    int     						_pass;
+	std::map<std::string, Method>	commands;
+
 /* 
 ************************************************************
 ** Данные для подключения

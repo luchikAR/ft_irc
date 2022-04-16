@@ -20,13 +20,17 @@ Server::Server(const char *port, const char *pass) {
     hints.ai_flags      = AI_PASSIVE;   // заполните мой IP-адрес за меня
 
     // хардкод
-    _g_cmd_name[0] = "NICK";
-    _g_cmd_name[1] = "PASS";
-    _g_cmd_name[2] = "USER";
-    _g_cmd_name[3] = "NOTICE";
-    _g_cmd_name[4] = "JOIN";
-    _g_cmd_name[5] = "KICK";
-    _g_cmd_name[6] = "PRIVMSG";
+	commands["PASS"] = &Server::passCmd;
+	commands["NICK"] = &Server::nickCmd;
+	commands["USER"] = &Server::userCmd;
+	commands["QUIT"] = &Server::quitCmd;
+	commands["PRIVMSG"] = &Server::privmsgCmd;
+	commands["NOTICE"] = &Server::noticeCmd;
+	commands["JOIN"] = &Server::joinCmd;
+	commands["KICK"] = &Server::kickCmd;
+	// commands["PING"] = &Server::pingCmd;
+	// commands["PONG"] = &Server::pongCmd;
+	// commands["KILL"] = &Server::killCmd;
 }
 
 Server::~Server() {
@@ -97,7 +101,7 @@ void    Server::_initializationServ()
         std::cerr << "getaddrinfo: " << gai_strerror(status) << std::endl;
         exit (EXIT_FAILURE);
     }
-    
+
     this->socket_fd = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
     if (this->socket_fd == -1) {
         _print_error("error on server: socket");
@@ -157,7 +161,7 @@ int Server::start(void)
     _system_mess("server: waiting for connections…");
 
 	signal(SIGINT, sigHandler);
-/* 
+/*
 ************************************************************
 ** Начинаем работать с сообщением от пользователей
 ************************************************************
@@ -169,7 +173,7 @@ int Server::start(void)
         ** grabConnection
         ************************************************************
         */
-        struct sockaddr_in their_addr; // только для accept (вынести в класс?)
+        struct sockaddr_in their_addr; // только для accept
         socklen_t addr_size = sizeof (their_addr);
         int clientSocket = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
         if (clientSocket >= 0)
@@ -193,7 +197,7 @@ int Server::start(void)
         // Убрать _usersFD.data() так как это C++ 11
         // &_usersFD
         int	pret = poll(_usersFD.data(), _usersFD.size(), TIMEOUT);
-        std::vector<int>	toErase;        
+        std::vector<int>	toErase;
         // протестить > 0, так как ещё и меньше может вернуть
         if (pret != 0)
         {
