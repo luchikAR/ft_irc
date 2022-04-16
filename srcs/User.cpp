@@ -35,7 +35,14 @@ int		User::readMessage()
 	return 0;
 }
 
+void	User::sendMessage(const std::string &msg) const
+{
+	if (msg.size() > 0)
+		send(this->_socket_user, msg.c_str(), msg.size(), 0);
+}
+
 void    User::setFlag(int _flag) {
+	// надо сделать обработку всех флагов
 	if (_flag == BREAKCONNECTION)
 		this->_flagUser.break_connect = true;
 }
@@ -65,4 +72,8 @@ const std::string	&User::getNickname() const {
 
 const std::string	&User::getRealname() const {
 	return(this->_real_name);
+}
+
+std::string	User::getPrefix() const {
+	return std::string(this->_nick + "!" + this->_user_name + "@" + this->_hostname);
 }
