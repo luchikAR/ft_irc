@@ -60,6 +60,12 @@ void    Server::_ft_correct(std::vector<std::string> *str) {
 		        i->replace(i->find(comp), 1, "");
         }
     }
+	char comp = ' ';
+	i = str->begin();
+	for ( ; i < str->end(); i++) {
+		while (i->find(comp) != std::string::npos)
+			i->replace(i->find(comp), 1, "");
+	}
 }
 
 int	Server::makeCommand(User &user)
