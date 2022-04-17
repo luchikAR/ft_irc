@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-
+#include <iostream>
 #include <string>
 
 #define RED		"\033[1;31m"

@@ -91,5 +91,5 @@ void User::setRealname(const std::string realName) {
 }
 
 void User::setQuitMessage(const std::string msg) {
-
+	std::cout << "Quit - " << msg << std::endl;
 }

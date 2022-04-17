@@ -13,7 +13,10 @@ SOURCEFILES=	main.cpp \
 				User.cpp \
 				Channel.cpp \
 				commands/split.cpp \
-				commands/error_modul.cpp
+				commands/error_modul.cpp \
+				commands/CheckNick.cpp \
+				commands/ParserCommands.cpp \
+				commands/sendReply.cpp
 
 #BOTFOLDER = bot/
 

@@ -13,7 +13,7 @@
 
 int Server::passCmd(const std::vector <std::string> &msg, User &user) {
 	if (msg.empty() == true) {
-		sendError(user, ERR_NEEDMOREPARAMS, msg[0])
+		sendError(user, ERR_NEEDMOREPARAMS, msg[0]);
 	}
 	else if (user.getFlags().registered == true) {
 		sendError(user, ERR_ALREADYREGISTRED);
@@ -29,7 +29,7 @@ int Server::nickCmd(const std::vector <std::string> &msg, User &user) {
 	if (msg.empty() == true) {
 		sendError(user, ERR_NEEDMOREPARAMS, msg[0]);
 	}
-	else if (checkNick(msg[1]) == false || msg[1] == this->name) // что за проверка msg[1] == this->name ????
+	else if (checkNick(msg[1]) == false /* || msg[1] == this->name */ ) // что за проверка msg[1] == this->name ????
 		sendError(user, ERR_ERRONEUSNICKNAME, msg[1]);
 	else if (nickIsExist(msg[1]) == false)
 		sendError(user, ERR_NICKNAMEINUSE, msg[1]);
@@ -59,8 +59,8 @@ int		Server::userCmd(const std::vector <std::string> &msg, User &user) {
 }
 
 int		Server::quitCmd(const std::vector <std::string> &msg, User &user) {
-//	if (msg.size() > 1)
-//		user.setQuitMessage(msg[1]); //зачем фиксировать сообщение о выходе?
+	if (msg.size() > 1)
+		user.setQuitMessage(msg[1]); //зачем фиксировать сообщение о выходе?
 //	this->nicknamesHistory.addUser(user);
 	return (DISCONNECT);
 }
