@@ -77,3 +77,19 @@ const std::string	&User::getRealname() const {
 std::string	User::getPrefix() const {
 	return std::string(this->_nick + "!" + this->_user_name + "@" + this->_hostname);
 }
+
+void User::setNickname(const std::string nickName) {
+	this->_nick = nickName;
+}
+
+void User::setUsername(const std::string userName) {
+	this->_user_name = userName;
+}
+
+void User::setRealname(const std::string realName) {
+	this->_real_name = realName;
+}
+
+void User::setQuitMessage(const std::string msg) {
+
+}

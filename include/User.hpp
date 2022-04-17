@@ -72,6 +72,10 @@ public:
 	const std::string	&getNickname() const;
 	const std::string	&getRealname() const;
     std::string         getPrefix() const;
+	void				setNickname(const std::string nickName);
+	void				setUsername(const std::string userName);
+	void 				setRealname(const std::string realName);
+	void 				setQuitMessage(const std::string msg);
 };
 
 

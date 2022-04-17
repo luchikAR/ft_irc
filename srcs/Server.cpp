@@ -161,6 +161,11 @@ int Server::start(void)
     _system_mess("server: waiting for connections…");
 
 	signal(SIGINT, sigHandler);
+
+std::vector<User *> Server::getUsers() const {
+	return _users;
+}
+
 /*
 ************************************************************
 ** Начинаем работать с сообщением от пользователей
@@ -235,4 +240,3 @@ int Server::start(void)
     
    return (0);
 }
-

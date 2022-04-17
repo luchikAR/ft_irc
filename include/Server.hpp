@@ -89,6 +89,10 @@ public:
 	~Server();
 
     int		start(void);
+
+	// getter
+
+	std::vector<User *> getUsers() const;
 };
 
 
