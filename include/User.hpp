@@ -7,6 +7,8 @@
 #include <iostream>
 #include <string>
 
+#include "Channel.hpp"
+
 #define RED		"\033[1;31m"
 #define GREEN	"\033[1;32m"
 #define YELLOW	"\033[1;33m"
@@ -50,10 +52,11 @@ private:
     std::string _real_name;
     
     // от levensta
-    std::string _hostname; // зачем?)
-    std::string _servername; // зачем?)
-    std::string message;
-    flagUser    _flagUser;
+    std::string                         _hostname; // зачем?)
+    std::string                         _servername; // зачем?)
+    std::string                         message;
+    flagUser                            _flagUser;
+	std::map<std::string, Channel *>	channels;
 
     int         _socket_user;
     int         _status;
@@ -67,25 +70,26 @@ public:
 
     int                 readMessage();
 	void	    	    sendMessage(const std::string &msg) const;
-
+	void				removeFlag(int flag);
+    void	            addChannel(const Channel &channel);
+    
+    // getters
+    const std::string	                &getMessages() const;
+    struct flagUser		                getFlags() const;
+	int				                    getSockfd() const;
+	const std::string	                &getUsername() const;
+	const std::string	                &getServername() const;
+	const std::string	                &getNickname() const;
+	const std::string	                &getRealname() const;
+    std::string                         getPrefix() const;
+    const std::vector<const Channel *>	&getChannels() const;
+    
     // setters
     void                setFlag(int _flag);
-
-    // getters
-    const std::string	&getMessages() const;
-    struct flagUser		getFlags() const;
-	int				    getSockfd() const;
-	const std::string	&getUsername() const;
-	const std::string	&getServername() const;
-	const std::string	&getNickname() const;
-	const std::string	&getRealname() const;
-    std::string         getPrefix() const;
 	void				setNickname(const std::string nickName);
 	void				setUsername(const std::string userName);
 	void 				setRealname(const std::string realName);
 	void 				setQuitMessage(const std::string msg);
-
-	void				removeFlag(int flag);
 };
 
 

@@ -50,6 +50,7 @@ private:
     int     						_port;
     int     						_pass;
 	std::map<std::string, Method>	commands;
+	static const unsigned long		maxChannels = 20;
 
 /* 
 ************************************************************
@@ -71,15 +72,15 @@ private:
 	void	_client_mess(std::string str) const;
 
 	// command
-
+	int				connectToChannel(const User &user, const std::string &name, const std::string &key);
 	int				passCmd(const std::vector<std::string> &msg, User &user);
 	int				nickCmd(const std::vector<std::string> &msg, User &user);
 	int				userCmd(const std::vector<std::string> &msg, User &user);
 	int				quitCmd(const std::vector<std::string> &msg, User &user);
 //	int				privmsgCmd(const std::vector<std::string> &msg, User &user);
 //	int				noticeCmd(const std::vector<std::string> &msg, User &user);
-//	int				joinCmd(const std::vector<std::string> &msg, User &user);
-//	int				kickCmd(const std::vector<std::string> &msg, User &user);
+	int				joinCmd(const std::vector<std::string> &msg, User &user);
+	int				kickCmd(const std::vector<std::string> &msg, User &user);
 
 	Server();
 	Server(const Server& copy);

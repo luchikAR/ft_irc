@@ -88,6 +88,7 @@ const std::string	&User::getUsername() const {
 const std::string	&User::getServername() const {
 	return(this->_servername);
 }
+
 const std::string	&User::getNickname() const {
 	return(this->_nick);
 }
@@ -98,6 +99,16 @@ const std::string	&User::getRealname() const {
 
 std::string	User::getPrefix() const {
 	return std::string(this->_nick + "!" + this->_user_name + "@" + this->_hostname);
+}
+
+const std::vector<const Channel *>	&User::getChannels() const
+{
+	return this->channels;
+}
+
+void	User::addChannel(const Channel &channel)
+{
+	channels.push_back(&channel);
 }
 
 void User::setNickname(const std::string nickName) {

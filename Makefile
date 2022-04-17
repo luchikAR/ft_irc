@@ -12,11 +12,12 @@ SOURCEFILES=	main.cpp \
 				Server.cpp \
 				User.cpp \
 				Channel.cpp \
-				commands/split.cpp \
+				commands/utils.cpp \
 				commands/error_modul.cpp \
 				commands/CheckNick.cpp \
 				commands/ParserCommands.cpp \
-				commands/sendReply.cpp
+				commands/sendReply.cpp \
+				commands/ChannelCommands.cpp
 
 #BOTFOLDER = bot/
 
