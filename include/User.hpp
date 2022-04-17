@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-
+#include <iostream>
 #include <string>
 
 #define RED		"\033[1;31m"
@@ -18,6 +18,14 @@
 #define REGISTERED		1
 #define BREAKCONNECTION	2
 #define	DISCONNECT  -2
+
+#define REGISTERED		1
+#define INVISIBLE		2
+#define RECEIVENOTICE	3
+#define RECEIVEWALLOPS	4
+#define IRCOPERATOR		5
+#define AWAY			6
+#define PINGING			7
 
 struct flagUser
 {
@@ -72,6 +80,12 @@ public:
 	const std::string	&getNickname() const;
 	const std::string	&getRealname() const;
     std::string         getPrefix() const;
+	void				setNickname(const std::string nickName);
+	void				setUsername(const std::string userName);
+	void 				setRealname(const std::string realName);
+	void 				setQuitMessage(const std::string msg);
+
+	void				removeFlag(int flag);
 };
 
 

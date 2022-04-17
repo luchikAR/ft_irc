@@ -24,10 +24,10 @@ Server::Server(const char *port, const char *pass) {
 	commands["NICK"] = &Server::nickCmd;
 	commands["USER"] = &Server::userCmd;
 	commands["QUIT"] = &Server::quitCmd;
-	commands["PRIVMSG"] = &Server::privmsgCmd;
-	commands["NOTICE"] = &Server::noticeCmd;
-	commands["JOIN"] = &Server::joinCmd;
-	commands["KICK"] = &Server::kickCmd;
+//	commands["PRIVMSG"] = &Server::privmsgCmd;
+//	commands["NOTICE"] = &Server::noticeCmd;
+//	commands["JOIN"] = &Server::joinCmd;
+//	commands["KICK"] = &Server::kickCmd;
 	// commands["PING"] = &Server::pingCmd;
 	// commands["PONG"] = &Server::pongCmd;
 	// commands["KILL"] = &Server::killCmd;
@@ -60,6 +60,12 @@ void    Server::_ft_correct(std::vector<std::string> *str) {
 		        i->replace(i->find(comp), 1, "");
         }
     }
+	char comp = ' ';
+	i = str->begin();
+	for ( ; i < str->end(); i++) {
+		while (i->find(comp) != std::string::npos)
+			i->replace(i->find(comp), 1, "");
+	}
 }
 
 int	Server::makeCommand(User &user)
@@ -72,19 +78,19 @@ int	Server::makeCommand(User &user)
 	if (user.getFlags().registered == false && comm[0] != "QUIT" && comm[0] != "PASS" \
 			&& comm[0] != "USER" && comm[0] != "NICK")
 	    sendError(user, ERR_NOTREGISTERED);
-	// else
-	// {
-	// 	try
-	// 	{
-	// 		int ret = (this->*(commands.at(msg.getCommand())))(msg, user);
-	// 		if (ret == DISCONNECT)
-	// 			return (DISCONNECT);
-	// 	}
-	// 	catch(const std::exception& e)
-	// 	{
-	// 		sendError(user, ERR_UNKNOWNCOMMAND, msg.getCommand());
-	// 	}
-	// }
+	 else
+	 {
+	 	try
+	 	{
+	 		int ret = (this->*(commands.at(comm[0])))(comm, user);
+	 		if (ret == DISCONNECT)
+	 			return (DISCONNECT);
+	 	}
+	 	catch(const std::exception& e)
+	 	{
+	 		sendError(user, ERR_UNKNOWNCOMMAND, comm[0]);
+	 	}
+	 }
     // send(clientSocket, buf, bytesReceived + 1, 0);
 	return (0);
 }
@@ -161,6 +167,7 @@ int Server::start(void)
     _system_mess("server: waiting for connections…");
 
 	signal(SIGINT, sigHandler);
+
 /*
 ************************************************************
 ** Начинаем работать с сообщением от пользователей
@@ -236,3 +243,12 @@ int Server::start(void)
    return (0);
 }
 
+bool Server::nickIsExist(const std::string nick) {
+	std::vector<User *> users = getUsers();
+	for (size_t i = 0; i < users.size(); ++i) {
+		if (users[i]->getNickname() == nick) {
+			return false;
+		}
+	}
+	return true;
+}

@@ -42,9 +42,31 @@ void	User::sendMessage(const std::string &msg) const
 }
 
 void    User::setFlag(int _flag) {
-	// надо сделать обработку всех флагов
-	if (_flag == BREAKCONNECTION)
+	switch (_flag)
+	{
+	case REGISTERED:
+		this->_flagUser.registered = true;
+		break;
+	case BREAKCONNECTION:
 		this->_flagUser.break_connect = true;
+		break;
+	default:
+		break;
+	}
+}
+
+void	User::removeFlag(int _flag) {
+	switch (_flag)
+	{
+	case REGISTERED:
+		this->_flagUser.registered = false;
+		break;
+	case BREAKCONNECTION:
+		this->_flagUser.break_connect = false;
+		break;
+	default:
+		break;
+	}
 }
 
 const std::string	&User::getMessages() const {
@@ -76,4 +98,20 @@ const std::string	&User::getRealname() const {
 
 std::string	User::getPrefix() const {
 	return std::string(this->_nick + "!" + this->_user_name + "@" + this->_hostname);
+}
+
+void User::setNickname(const std::string nickName) {
+	this->_nick = nickName;
+}
+
+void User::setUsername(const std::string userName) {
+	this->_user_name = userName;
+}
+
+void User::setRealname(const std::string realName) {
+	this->_real_name = realName;
+}
+
+void User::setQuitMessage(const std::string msg) {
+	std::cout << "Quit - " << msg << std::endl;
 }

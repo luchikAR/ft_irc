@@ -76,10 +76,10 @@ private:
 	int				nickCmd(const std::vector<std::string> &msg, User &user);
 	int				userCmd(const std::vector<std::string> &msg, User &user);
 	int				quitCmd(const std::vector<std::string> &msg, User &user);
-	int				privmsgCmd(const std::vector<std::string> &msg, User &user);
-	int				noticeCmd(const std::vector<std::string> &msg, User &user);
-	int				joinCmd(const std::vector<std::string> &msg, User &user);
-	int				kickCmd(const std::vector<std::string> &msg, User &user);
+//	int				privmsgCmd(const std::vector<std::string> &msg, User &user);
+//	int				noticeCmd(const std::vector<std::string> &msg, User &user);
+//	int				joinCmd(const std::vector<std::string> &msg, User &user);
+//	int				kickCmd(const std::vector<std::string> &msg, User &user);
 
 	Server();
 	Server(const Server& copy);
@@ -89,6 +89,12 @@ public:
 	~Server();
 
     int		start(void);
+
+	std::vector<User *> getUsers() const {
+		return _users;
+	}
+
+	bool nickIsExist(const std::string nick);
 };
 
 
