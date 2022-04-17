@@ -26,7 +26,6 @@
 #define IRCOPERATOR		5
 #define AWAY			6
 #define PINGING			7
-#define BREAKCONNECTION	8
 
 struct flagUser
 {
