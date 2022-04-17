@@ -26,8 +26,8 @@ Server::Server(const char *port, const char *pass) {
 	commands["QUIT"] = &Server::quitCmd;
 //	commands["PRIVMSG"] = &Server::privmsgCmd;
 //	commands["NOTICE"] = &Server::noticeCmd;
-//	commands["JOIN"] = &Server::joinCmd;
-//	commands["KICK"] = &Server::kickCmd;
+	commands["JOIN"] = &Server::joinCmd;
+	commands["KICK"] = &Server::kickCmd;
 	// commands["PING"] = &Server::pingCmd;
 	// commands["PONG"] = &Server::pongCmd;
 	// commands["KILL"] = &Server::killCmd;
@@ -70,7 +70,7 @@ void    Server::_ft_correct(std::vector<std::string> *str) {
 
 int	Server::makeCommand(User &user)
 {
-    std::vector<std::string> comm = split(user.getMessages());
+    std::vector<std::string> comm = split(user.getMessages(), ' ');
     _ft_correct(&comm);
     _client_mess(user.getMessages()); // для сервера
     // std::cout << "comm = '" << comm[0] << "' " << "len = " << comm[0].length() << std::endl;
