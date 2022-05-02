@@ -13,6 +13,7 @@
 #include <unistd.h> // close()
 #include <vector>
 #include <map>
+#include <set>
 #include <poll.h>
 #include <fcntl.h> // для работы с флагами файла
 #include <csignal>
@@ -77,25 +78,24 @@ private:
 	int				nickCmd(const std::vector<std::string> &msg, User &user);
 	int				userCmd(const std::vector<std::string> &msg, User &user);
 	int				quitCmd(const std::vector<std::string> &msg, User &user);
-//	int				privmsgCmd(const std::vector<std::string> &msg, User &user);
-//	int				noticeCmd(const std::vector<std::string> &msg, User &user);
+	int				privmsgCmd(const std::vector<std::string> &msg, User &user);
+	int				noticeCmd(const std::vector<std::string> &msg, User &user);
 	int				joinCmd(const std::vector<std::string> &msg, User &user);
 	int				kickCmd(const std::vector<std::string> &msg, User &user);
-
 	Server();
 	Server(const Server& copy);
 	Server	&operator=(const Server& other);
 public:
 	Server(const char *port, const char *pass);
 	~Server();
-
     int		start(void);
 
 	std::vector<User *> getUsers() const {
 		return _users;
 	}
 
-	bool nickIsExist(const std::string nick);
+	User*	getUserByName(const std::string &name);
+	bool	nickIsExist(const std::string nick);
 };
 
 
