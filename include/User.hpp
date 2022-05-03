@@ -5,9 +5,8 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <iostream>
+#include <vector>
 #include <string>
-
-#include "Channel.hpp"
 
 #define RED		"\033[1;31m"
 #define GREEN	"\033[1;32m"
@@ -44,13 +43,15 @@ struct flagUser
 ** ====================================================================
 */
 
+class Channel;
+
 class User {
 private:
     std::string _pass;
     std::string _nick;
     std::string _user_name;
     std::string _real_name;
-    
+
     // от levensta
     std::string                         _hostname; // зачем?)
     std::string                         _servername; // зачем?)
@@ -73,7 +74,7 @@ public:
 	void				removeFlag(int flag);
     void	            addChannel(const Channel &channel);
     void	            removeChannel(const std::string &name);
-    
+
     // getters
     const std::string	                &getMessages() const;
     struct flagUser		                getFlags() const;
@@ -84,7 +85,7 @@ public:
 	const std::string	                &getRealname() const;
     std::string                         getPrefix() const;
     const std::vector<const Channel *>	&getChannels() const;
-    
+
     // setters
     void                setFlag(int _flag);
 	void				setNickname(const std::string nickName);
@@ -93,5 +94,6 @@ public:
 	void 				setQuitMessage(const std::string msg);
 };
 
+#include "Channel.hpp"
 
 #endif

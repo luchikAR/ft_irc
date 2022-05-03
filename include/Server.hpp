@@ -102,9 +102,8 @@ public:
 		return _users;
 	}
 
-	User*	getUserByName(const std::string &name);
 	bool	nickIsExist(const std::string nick);
+	bool	containsChannel(std::string &channel) const;
 };
-
 
 #endif
