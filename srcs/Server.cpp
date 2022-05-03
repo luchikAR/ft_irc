@@ -51,6 +51,27 @@ void Server::_client_mess(std::string str) const {
     std::cerr << PURPLE << "[CLIENT]: " << RESET << str << "\r\n";
 }
 
+bool	Server::containsNickname(const std::string &nickname) const
+{
+	size_t	usersCount = _users.size();
+	for (size_t i = 0; i < usersCount; i++)
+	{
+		if (_users[i]->getNickname() == nickname)
+			return (true);
+	}
+	return (false);
+}
+
+User	*Server::getUserByName(const std::string &name)
+{
+	User	*ret;
+	size_t	usersCount = _users.size();
+	for (size_t i = 0; i < usersCount; i++)
+		if (_users[i]->getNickname() == name)
+			ret = _users[i];
+	return ret;
+}
+
 // убирает сигналы типа (^D) (PA^https://github.com/levensta/IRC-ServerDSS) в сообщении как просит сабджект.
 void    Server::_ft_correct(std::vector<std::string> *str) {
     std::vector<std::string>::iterator i = str->begin();

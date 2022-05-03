@@ -1,6 +1,18 @@
 #include "../../include/Server.hpp"
 #include "../../include/utils.hpp"
 
+bool	Server::containsChannel(const std::string &name) const
+{
+	try
+	{
+		channels.at(name);
+		return true;
+	}
+	catch(const std::exception& e)
+	{}
+	return false;
+}
+
 int		Server::joinCmd(const std::vector<std::string> &msg, User &user)
 {
     int coutParam = msg.size() - 1;
@@ -45,29 +57,30 @@ int		Server::connectToChannel(const User &user, const std::string &name, const s
 
 int		Server::kickCmd(const std::vector<std::string> &msg, User &user)
 {
-	if (msg.getParams().size() < 2)
+	int coutParam = msg.size() - 1;
+	if (coutParam < 2)
 		sendError(user, ERR_NEEDMOREPARAMS, "KICK");
-	else if (!containsChannel(msg.getParams()[0]))
-		sendError(user, ERR_NOSUCHCHANNEL, msg.getParams()[0]);
-	else if (!channels.at(msg.getParams()[0])->isOperator(user))
-		sendError(user, ERR_CHANOPRIVSNEEDED, msg.getParams()[0]);
-	else if (!channels.at(msg.getParams()[0])->containsNickname(user.getNickname()))
-		sendError(user, ERR_NOTONCHANNEL, msg.getParams()[0]);
-	else if (!containsNickname(msg.getParams()[1]))
-		sendError(user, ERR_NOSUCHNICK, msg.getParams()[1]);
-	else if (!channels.at(msg.getParams()[0])->containsNickname(msg.getParams()[1]))
-		sendError(user, ERR_USERNOTINCHANNEL, msg.getParams()[1], msg.getParams()[0]);
+	else if (!containsChannel(msg[1]) )
+		sendError(user, ERR_NOSUCHCHANNEL, msg[1]);
+	else if (!channels.at(msg[1])->isOperator(user))
+		sendError(user, ERR_CHANOPRIVSNEEDED, msg[1]);
+	else if (!channels.at(msg[1])->containsNickname(user.getNickname()))
+		sendError(user, ERR_NOTONCHANNEL, msg[1]);
+	else if (!containsNickname(msg[2]) )
+		sendError(user, ERR_NOSUCHNICK, msg[2]);
+	else if (!channels.at( msg[1] )->containsNickname( msg[2] ) )
+		sendError(user, ERR_USERNOTINCHANNEL, msg[2], msg[1]);
 	else
 	{
-		Channel	*chan = channels.at(msg.getParams()[0]);
-		std::string	message = "KICK " + chan->getName() + " " + msg.getParams()[1] + " :";
-		if (msg.getParams().size() > 2)
-			message += msg.getParams()[2];
+		Channel	*chan = channels.at(msg[1]);
+		std::string	message = "KICK " + chan->getName() + " " + msg[2] + " :";
+		if (coutParam > 2)
+			message += msg[3];
 		else
 			message += user.getNickname();
 		chan->sendMessage(message + "\n", user, true);
-		chan->disconnect(*(getUserByName(msg.getParams()[1])));
-		getUserByName(msg.getParams()[1])->removeChannel(msg.getParams()[0]);
+		chan->disconnect(*(getUserByName( msg[2] ) ));
+		getUserByName(msg[2] )->removeChannel( msg[1] );
 	}
 	return 0;
 }

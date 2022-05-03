@@ -1,6 +1,8 @@
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
+class User;
+
 #include "Server.hpp"
 
 #include <string>

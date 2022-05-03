@@ -111,6 +111,16 @@ void	User::addChannel(const Channel &channel)
 	channels.push_back(&channel);
 }
 
+void	User::removeChannel(const std::string &name)
+{
+	std::vector<const Channel *>::iterator	begin = channels.begin();
+	std::vector<const Channel *>::iterator	end = channels.end();
+	for (; begin != end; ++begin)
+		if ((*begin)->getName() == name)
+			break ;
+	channels.erase(begin);
+}
+
 void User::setNickname(const std::string nickName) {
 	this->_nick = nickName;
 }
