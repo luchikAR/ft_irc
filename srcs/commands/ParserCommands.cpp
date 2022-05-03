@@ -55,7 +55,7 @@ int		Server::userCmd(const std::vector <std::string> &msg, User &user) {
 		user.setUsername(msg[1]);
 		user.setRealname(msg[4]);
 		user.setFlag(REGISTERED);
-		user.sendMessage("You are registered!");
+		user.sendMessage("You are registered!\n");
 	}
 	return (REGISTERED); // тут стояла проверка checkConnection(user)
 }

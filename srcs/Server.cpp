@@ -97,7 +97,7 @@ int	Server::makeCommand(User &user)
     // std::cout << "comm = '" << comm[0] << "' " << "len = " << comm[0].length() << std::endl;
 
 	if (user.getFlags().registered == false && comm[0] != "QUIT" && comm[0] != "PASS" \
-			&& comm[0] != "USER" && comm[0] != "NICK")
+			&& comm[0] != "USER" && comm[0] != "NICK" && comm[0] != "PRIVMSG")
 	    sendError(user, ERR_NOTREGISTERED);
 	 else
 	 {
@@ -268,10 +268,10 @@ bool Server::nickIsExist(const std::string nick) {
 	std::vector<User *> users = getUsers();
 	for (size_t i = 0; i < users.size(); ++i) {
 		if (users[i]->getNickname() == nick) {
-			return true;
+			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 bool Server::containsChannel(std::string &channel) const {
