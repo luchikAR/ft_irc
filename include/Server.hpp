@@ -1,6 +1,8 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+class Channel;
+
 #include <iostream>
 
 #include <sys/types.h>
@@ -19,10 +21,10 @@
 #include <csignal>
 #include <arpa/inet.h> // переводет ip в имя
 
-#include "../include/User.hpp"
-#include "../include/utils.hpp"
-#include "../include/Channel.hpp"
-#include "../include/send_modul.hpp"
+#include "User.hpp"
+#include "utils.hpp"
+#include "Channel.hpp"
+#include "send_modul.hpp"
 
 #define COUT_COMMAND 7
 #define TIMEOUT 1000 // 1 секунда
@@ -52,6 +54,7 @@ private:
     int     						_pass;
 	std::map<std::string, Method>	commands;
 	static const unsigned long		maxChannels = 20;
+	std::map<std::string, Channel *>		channels;
 
 /* 
 ************************************************************
@@ -82,12 +85,17 @@ private:
 	int				noticeCmd(const std::vector<std::string> &msg, User &user);
 	int				joinCmd(const std::vector<std::string> &msg, User &user);
 	int				kickCmd(const std::vector<std::string> &msg, User &user);
+	bool			containsChannel(const std::string &name) const;
+	bool			containsNickname(const std::string &nickname) const;
+	User*			getUserByName(const std::string &name);
+
 	Server();
 	Server(const Server& copy);
 	Server	&operator=(const Server& other);
 public:
 	Server(const char *port, const char *pass);
 	~Server();
+
     int		start(void);
 
 	std::vector<User *> getUsers() const {

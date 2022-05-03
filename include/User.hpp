@@ -56,7 +56,7 @@ private:
     std::string                         _servername; // зачем?)
     std::string                         message;
     flagUser                            _flagUser;
-	std::map<std::string, Channel *>	channels;
+	std::vector<const Channel *>		channels;
 
     int         _socket_user;
     int         _status;
@@ -72,6 +72,7 @@ public:
 	void	    	    sendMessage(const std::string &msg) const;
 	void				removeFlag(int flag);
     void	            addChannel(const Channel &channel);
+    void	            removeChannel(const std::string &name);
     
     // getters
     const std::string	                &getMessages() const;
