@@ -12,26 +12,25 @@
 */
 
 int Server::passCmd(const std::vector <std::string> &msg, User &user) {
-	if (msg.empty() == true) {
+	if (msg.empty() == true || msg.size() <= 1) {
 		sendError(user, ERR_NEEDMOREPARAMS, msg[0]);
 	}
 	else if (user.getFlags().registered == true) {
 		sendError(user, ERR_ALREADYREGISTRED);
 	}
-	/*
-	 * 	else
-		user.setPassword(msg.getParams()[0]);
-	 */
+	else {
+		user.setPassword(msg[1]);
+	}
 	return 0;
 }
 
 int Server::nickCmd(const std::vector <std::string> &msg, User &user) {
-	if (msg.empty() == true) {
+	if (msg.size() <= 1) {
 		sendError(user, ERR_NEEDMOREPARAMS, msg[0]);
 	}
-	else if (checkNick(msg[1]) == false /* || msg[1] == this->name */ ) // что за проверка msg[1] == this->name ????
+	else if (checkNick(msg[1]) == false || msg[1] == this->_name_server ) // что за проверка msg[1] == this->name ????
 		sendError(user, ERR_ERRONEUSNICKNAME, msg[1]);
-	else if (nickIsExist(msg[1]) == false)
+	else if (nickIsExist(msg[1]) )
 		sendError(user, ERR_NICKNAMEINUSE, msg[1]);
 	else
 	{
@@ -42,7 +41,7 @@ int Server::nickCmd(const std::vector <std::string> &msg, User &user) {
 //		}
 		user.setNickname(msg[1]);
 	}
-	return (REGISTERED); // тут стояла проверка checkConnection(user)
+	return (checkConnection(user));
 }
 
 int		Server::userCmd(const std::vector <std::string> &msg, User &user) {
@@ -54,10 +53,27 @@ int		Server::userCmd(const std::vector <std::string> &msg, User &user) {
 	{
 		user.setUsername(msg[1]);
 		user.setRealname(msg[4]);
-		user.setFlag(REGISTERED);
-		user.sendMessage("You are registered!");
 	}
-	return (REGISTERED); // тут стояла проверка checkConnection(user)
+	return (checkConnection(user));
+}
+
+int		Server::checkConnection(User &user)
+{
+	if (user.getNickname().size() > 0 && user.getUsername().size() > 0)
+	{
+		if (_pass.size() == 0 || user.getPassword() == _pass)
+		{
+			if (!(user.getFlags().registered == true))
+			{
+				user.setFlag(REGISTERED);
+				user.sendMessage("You are registered!\r\n"); // можно переместить в другое место
+				// sendMOTD(user); выводило характеристики сервера
+			}
+		}
+		else
+			return (DISCONNECT);
+	}
+	return (0);
 }
 
 int		Server::quitCmd(const std::vector <std::string> &msg, User &user) {

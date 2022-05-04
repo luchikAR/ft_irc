@@ -55,6 +55,10 @@ void    User::setFlag(int _flag) {
 	}
 }
 
+void	User::setPassword(const std::string &pass) {
+	_pass = pass;
+}
+
 void	User::removeFlag(int _flag) {
 	switch (_flag)
 	{
@@ -95,6 +99,11 @@ const std::string	&User::getNickname() const {
 
 const std::string	&User::getRealname() const {
 	return(this->_real_name);
+}
+
+const std::string	&User::getPassword() const
+{
+	return _pass;
 }
 
 std::string	User::getPrefix() const {

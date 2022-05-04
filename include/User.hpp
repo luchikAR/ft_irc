@@ -84,6 +84,7 @@ public:
 	const std::string	                &getRealname() const;
     std::string                         getPrefix() const;
     const std::vector<const Channel *>	&getChannels() const;
+    const std::string	                &getPassword() const;
     
     // setters
     void                setFlag(int _flag);
@@ -91,6 +92,7 @@ public:
 	void				setUsername(const std::string userName);
 	void 				setRealname(const std::string realName);
 	void 				setQuitMessage(const std::string msg);
+    void                setPassword(const std::string &pass);
 };
 
 

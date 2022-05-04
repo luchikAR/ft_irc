@@ -11,8 +11,12 @@ void    sigHandler(int signum) {
 
 Server::Server(const char *port, const char *pass) {
     this->_port = atoi(port);
-	this->_pass = atoi(pass);
+	this->_pass = std::string(pass);
     this->_port_ch = port;
+    this->_name_server = "ft_IRC";
+    this->_operators.push_back("gvenonat");
+    this->_operators.push_back("ubolt");
+    this->_operators.push_back("fldelena");
 
     memset(&hints, 0, sizeof(hints));   // убедимся, что структура пуста
     hints.ai_family     = AF_UNSPEC;    // неважно, IPv4 или IPv6
@@ -265,11 +269,11 @@ int Server::start(void)
 }
 
 bool Server::nickIsExist(const std::string nick) {
-	std::vector<User *> users = getUsers();
-	for (size_t i = 0; i < users.size(); ++i) {
-		if (users[i]->getNickname() == nick) {
-			return false;
-		}
+	size_t	usersCount = _users.size();
+	for (size_t i = 0; i < usersCount; i++)
+	{
+		if (_users[i]->getNickname() == nick)
+			return (true);
 	}
-	return true;
+	return (false);
 }
