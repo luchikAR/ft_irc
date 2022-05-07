@@ -21,7 +21,7 @@ int Server::nickCmd(const std::vector <std::string> &msg, User &user) {
 	if (msg.size() <= 1) {
 		sendError(user, ERR_NEEDMOREPARAMS, msg[0]);
 	}
-	else if (checkNick(msg[1]) == false || msg[1] == this->_name_server ) // что за проверка msg[1] == this->name ????
+	else if (checkNick(msg[1]) == false || msg[1] == this->_name_server )
 		sendError(user, ERR_ERRONEUSNICKNAME, msg[1]);
 	else if (nickIsExist(msg[1]) )
 		sendError(user, ERR_NICKNAMEINUSE, msg[1]);
