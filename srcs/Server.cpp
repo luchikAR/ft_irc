@@ -66,9 +66,16 @@ User	*Server::getUserByName(const std::string &name)
 {
 	User	*ret;
 	size_t	usersCount = _users.size();
-	for (size_t i = 0; i < usersCount; i++)
+	for (size_t i = 0; i < usersCount; i++) {
+//		std::cout << "nickNames - " << _users[i]->getNickname() << "\n";
 		if (_users[i]->getNickname() == name)
 			ret = _users[i];
+	}
+//	std::cout << "nickName - ";
+//	for (size_t size = 0; size < _users[0]->getNickname().size(); ++size) {
+//		std::cout << _users[0]->getNickname()[size];
+//	}
+//	std::cout << std::endl;
 	return ret;
 }
 
@@ -100,13 +107,11 @@ int	Server::makeCommand(User &user)
 			&& comm[0] != "USER" && comm[0] != "NICK" && comm[0] != "PRIVMSG")
 	{
 		sendError(user, ERR_NOTREGISTERED);
-		std::cout << "I'm in ERRORS\n";
 	}
 	 else
 	 {
 	 	try
 	 	{
-			std::cout << "I'm in the Server.cpp\n";
 	 		int ret = (this->*(commands.at(comm[0])))(comm, user);
 	 		if (ret == DISCONNECT)
 	 			return (DISCONNECT);
@@ -116,7 +121,7 @@ int	Server::makeCommand(User &user)
 	 		sendError(user, ERR_UNKNOWNCOMMAND, comm[0]);
 	 	}
 	 }
-    // send(clientSocket, buf, bytesReceived + 1, 0);
+//     send(clientSocket, buf, bytesReceived + 1, 0);
 	return (0);
 }
 

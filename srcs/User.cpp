@@ -37,6 +37,7 @@ int		User::readMessage()
 
 void	User::sendMessage(const std::string &msg) const
 {
+//	std::cout << "socket is - " << _socket_user << "\n";
 	if (msg.size() > 0)
 		send(this->_socket_user, msg.c_str(), msg.size(), 0);
 }
@@ -98,6 +99,7 @@ const std::string	&User::getRealname() const {
 }
 
 std::string	User::getPrefix() const {
+//	std::cout << "nick is - " << _nick << "; hostname is - " << _hostname << "\n";
 	return std::string(this->_nick + "!" + this->_user_name + "@" + this->_hostname);
 }
 

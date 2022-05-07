@@ -55,7 +55,7 @@ int		Server::userCmd(const std::vector <std::string> &msg, User &user) {
 		user.setUsername(msg[1]);
 		user.setRealname(msg[4]);
 		user.setFlag(REGISTERED);
-		user.sendMessage("You are registered!\n");
+		user.sendMessage("You are registered!\r\n");
 	}
 	return (REGISTERED); // тут стояла проверка checkConnection(user)
 }
@@ -69,8 +69,6 @@ int		Server::quitCmd(const std::vector <std::string> &msg, User &user) {
 
 int 	Server::privmsgCmd(const std::vector<std::string> &msg, User &user)
 {
-	std::cout << "I'm in the privmsgCmd\n";
-
 	if (msg.size() == 1)
 		return (sendError(user, ERR_NORECIPIENT, msg[0]));
 	if (msg.size() == 2)
@@ -117,8 +115,14 @@ int 	Server::privmsgCmd(const std::vector<std::string> &msg, User &user)
 //			if (msg[0] == "PRIVMSG" && (this->getUserByName(*it)->getFlags() & AWAY))																 <--
 //																																						| этот чеккер нужен для автоответа с флагом AWAY ??
 //			sendReply(user.getServername(), user, RPL_AWAY, *it, this->getUserByName(*it)->getAwayMessage()); //для чего тут нужен getAwayMessage??? <--
-			if (msg[0] != "NOTICE" || (this->getUserByName(*it)->getFlags().registered & RECEIVENOTICE))
-				this->getUserByName(*it)->sendMessage(":" + user.getPrefix() + " " + msg[0] + " " + *it + " :" + msg[1] + "\n");
+//			if (msg[0] != "NOTICE" || (this->getUserByName(*it)->getFlags().registered & RECEIVENOTICE))
+//			std::cout << "prefix is - " << user.getPrefix() << "\n";
+//			std::cout << "nickName is - " << getUserByName(*it)->getNickname() << "\n";
+//			std::cout << "sockFD is - " << getUserByName(*it)->getSockfd() << "\n";
+			for (size_t i = 0; i < _users.size(); i++) {
+				std::cout << "nickNames - " << _users[i]->getNickname() << "\n";
+			}
+			this->getUserByName(*it)->sendMessage(":" + user.getPrefix() + " " + msg[0] + " " + *it + " :" + msg[1] + "\n");
 		}
 	}
 	return 0;
