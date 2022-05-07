@@ -55,6 +55,7 @@ private:
     std::string                         _hostname; // зачем?)
     std::string                         _servername; // зачем?)
     std::string                         message;
+    std::string							awayMessage;
     flagUser                            _flagUser;
 	std::vector<const Channel *>		channels;
 
@@ -85,6 +86,7 @@ public:
     std::string                         getPrefix() const;
     const std::vector<const Channel *>	&getChannels() const;
     const std::string	                &getPassword() const;
+    const std::string	                &getAwayMessage() const;
     
     // setters
     void                setFlag(int _flag);

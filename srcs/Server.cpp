@@ -28,7 +28,7 @@ Server::Server(const char *port, const char *pass) {
 	commands["NICK"] = &Server::nickCmd;
 	commands["USER"] = &Server::userCmd;
 	commands["QUIT"] = &Server::quitCmd;
-//	commands["PRIVMSG"] = &Server::privmsgCmd;
+	commands["PRIVMSG"] = &Server::privmsgCmd;
 //	commands["NOTICE"] = &Server::noticeCmd;
 	commands["JOIN"] = &Server::joinCmd;
 	commands["KICK"] = &Server::kickCmd;

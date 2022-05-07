@@ -106,6 +106,11 @@ const std::string	&User::getPassword() const
 	return _pass;
 }
 
+const std::string	&User::getAwayMessage() const
+{
+	return awayMessage;
+}
+
 std::string	User::getPrefix() const {
 	return std::string(this->_nick + "!" + this->_user_name + "@" + this->_hostname);
 }
