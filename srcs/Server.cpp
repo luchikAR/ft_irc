@@ -11,8 +11,12 @@ void    sigHandler(int signum) {
 
 Server::Server(const char *port, const char *pass) {
     this->_port = atoi(port);
-	this->_pass = atoi(pass);
+	this->_pass = std::string(pass);
     this->_port_ch = port;
+    this->_name_server = "ft_IRC";
+    this->_operators.push_back("gvenonat");
+    this->_operators.push_back("ubolt");
+    this->_operators.push_back("fldelena");
 
     memset(&hints, 0, sizeof(hints));   // убедимся, что структура пуста
     hints.ai_family     = AF_UNSPEC;    // неважно, IPv4 или IPv6
@@ -25,7 +29,7 @@ Server::Server(const char *port, const char *pass) {
 	commands["USER"] = &Server::userCmd;
 	commands["QUIT"] = &Server::quitCmd;
 	commands["PRIVMSG"] = &Server::privmsgCmd;
-	commands["NOTICE"] = &Server::noticeCmd;
+//	commands["NOTICE"] = &Server::noticeCmd;
 	commands["JOIN"] = &Server::joinCmd;
 	commands["KICK"] = &Server::kickCmd;
 	// commands["PING"] = &Server::pingCmd;
@@ -66,16 +70,9 @@ User	*Server::getUserByName(const std::string &name)
 {
 	User	*ret;
 	size_t	usersCount = _users.size();
-	for (size_t i = 0; i < usersCount; i++) {
-//		std::cout << "nickNames - " << _users[i]->getNickname() << "\n";
+	for (size_t i = 0; i < usersCount; i++)
 		if (_users[i]->getNickname() == name)
 			ret = _users[i];
-	}
-//	std::cout << "nickName - ";
-//	for (size_t size = 0; size < _users[0]->getNickname().size(); ++size) {
-//		std::cout << _users[0]->getNickname()[size];
-//	}
-//	std::cout << std::endl;
 	return ret;
 }
 
@@ -104,10 +101,8 @@ int	Server::makeCommand(User &user)
     // std::cout << "comm = '" << comm[0] << "' " << "len = " << comm[0].length() << std::endl;
 
 	if (user.getFlags().registered == false && comm[0] != "QUIT" && comm[0] != "PASS" \
-			&& comm[0] != "USER" && comm[0] != "NICK" && comm[0] != "PRIVMSG")
-	{
-		sendError(user, ERR_NOTREGISTERED);
-	}
+			&& comm[0] != "USER" && comm[0] != "NICK")
+	    sendError(user, ERR_NOTREGISTERED);
 	 else
 	 {
 	 	try
@@ -121,7 +116,7 @@ int	Server::makeCommand(User &user)
 	 		sendError(user, ERR_UNKNOWNCOMMAND, comm[0]);
 	 	}
 	 }
-//     send(clientSocket, buf, bytesReceived + 1, 0);
+    // send(clientSocket, buf, bytesReceived + 1, 0);
 	return (0);
 }
 
@@ -274,21 +269,11 @@ int Server::start(void)
 }
 
 bool Server::nickIsExist(const std::string nick) {
-	std::vector<User *> users = getUsers();
-	for (size_t i = 0; i < users.size(); ++i) {
-		if (users[i]->getNickname() == nick) {
-			return false;
-		}
+	size_t	usersCount = _users.size();
+	for (size_t i = 0; i < usersCount; i++)
+	{
+		if (_users[i]->getNickname() == nick)
+			return (true);
 	}
-	return true;
-}
-
-bool Server::containsChannel(std::string &channel) const {
-	try {
-		channels.at(channel);
-		return true;
-	}
-	catch (std::exception &e) {
-		return false;
-	}
+	return (false);
 }

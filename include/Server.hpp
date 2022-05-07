@@ -15,7 +15,6 @@ class Channel;
 #include <unistd.h> // close()
 #include <vector>
 #include <map>
-#include <set>
 #include <poll.h>
 #include <fcntl.h> // для работы с флагами файла
 #include <csignal>
@@ -47,11 +46,13 @@ private:
 ** Основные настройки сервера
 ************************************************************
 */
+	std::string						_name_server;
+	std::vector<std::string>		_operators;
 	std::vector<User *>				_users;
 	std::vector<struct pollfd>		_usersFD;
 	const char*						_port_ch;
     int     						_port;
-    int     						_pass;
+    std::string						_pass;
 	std::map<std::string, Method>	commands;
 	static const unsigned long		maxChannels = 20;
 	std::map<std::string, Channel *>		channels;
@@ -75,14 +76,15 @@ private:
 	void	_system_mess(std::string str) const;
 	void	_client_mess(std::string str) const;
 
-	// command
+	// command - work with user
 	int				connectToChannel(const User &user, const std::string &name, const std::string &key);
 	int				passCmd(const std::vector<std::string> &msg, User &user);
 	int				nickCmd(const std::vector<std::string> &msg, User &user);
 	int				userCmd(const std::vector<std::string> &msg, User &user);
+	int				checkConnection(User &user);
 	int				quitCmd(const std::vector<std::string> &msg, User &user);
 	int				privmsgCmd(const std::vector<std::string> &msg, User &user);
-	int				noticeCmd(const std::vector<std::string> &msg, User &user);
+//	int				noticeCmd(const std::vector<std::string> &msg, User &user);
 	int				joinCmd(const std::vector<std::string> &msg, User &user);
 	int				kickCmd(const std::vector<std::string> &msg, User &user);
 	bool			containsChannel(const std::string &name) const;
@@ -102,8 +104,8 @@ public:
 		return _users;
 	}
 
-	bool	nickIsExist(const std::string nick);
-	bool	containsChannel(std::string &channel) const;
+	bool nickIsExist(const std::string nick);
 };
+
 
 #endif
