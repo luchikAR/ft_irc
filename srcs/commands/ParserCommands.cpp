@@ -94,7 +94,15 @@ int 	Server::privmsgCmd(const std::vector<std::string> &msg, User &user)
 
 	std::vector<std::string> receivers = split(msg[1], ',');
 	std::set<std::string> uniqReceivers;
+	std::string message;
+	for (size_t i = 2; i < msg.size(); ++i) {
+		message += msg[i];
+		if (i + 1 != msg.size()) {
+			message += " ";
+		}
+	}
 
+	//проверка, что уведомление адресовано только одному человеку и не каналу
 	if (msg[0] == "NOTICE" && (receivers.size() > 1 \
 	|| receivers.front()[0] == '#' || receivers.front()[0] == '&'))
 		return (sendError(user, ERR_NOSUCHNICK, msg[1]));
@@ -133,11 +141,14 @@ int 	Server::privmsgCmd(const std::vector<std::string> &msg, User &user)
 		}
 		else
 		{
-			// if (msg[0] == "PRIVMSG" && (this->getUserByName(*it)->getFlags() & AWAY))
-			// 	sendReply(user.getServername(), user, RPL_AWAY, *it, this->getUserByName(*it)->getAwayMessage());
 			// if (msg[0] != "NOTICE" || (this->getUserByName(*it)->getFlags() & RECEIVENOTICE))
-				this->getUserByName(*it)->sendMessage(":" + user.getPrefix() + " " + msg[0] + " " + *it + " :" + msg[2] + "\n");
+				this->getUserByName(*it)->sendMessage(":" + user.getPrefix() + " " + msg[0] + " " + *it + " :" + message + "\n");
 		}
 	}
+	return 0;
+}
+
+int				Server::noticeCmd(const std::vector<std::string> &msg, User &user) {
+	privmsgCmd(msg, user);
 	return 0;
 }

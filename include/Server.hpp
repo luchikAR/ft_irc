@@ -84,7 +84,7 @@ private:
 	int				checkConnection(User &user);
 	int				quitCmd(const std::vector<std::string> &msg, User &user);
 	int				privmsgCmd(const std::vector<std::string> &msg, User &user);
-//	int				noticeCmd(const std::vector<std::string> &msg, User &user);
+	int				noticeCmd(const std::vector<std::string> &msg, User &user);
 	int				joinCmd(const std::vector<std::string> &msg, User &user);
 	int				kickCmd(const std::vector<std::string> &msg, User &user);
 	bool			containsChannel(const std::string &name) const;
