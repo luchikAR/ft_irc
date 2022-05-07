@@ -11,9 +11,6 @@ std::vector<std::string>	split(const std::string &s, char sep)
 		std::string::const_iterator	j = std::find(i, s.end(), sep);
 		if (i != s.end())
 		{
-			// if (j != s.end())
-			// 	ret.push_back(std::string(i, j + 1));
-			// else
 				ret.push_back(std::string(i, j));
 			i = j;
 		}

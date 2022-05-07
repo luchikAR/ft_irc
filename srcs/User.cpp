@@ -10,8 +10,6 @@ User::~User() { }
 int		User::readMessage()
 {
 	std::string	text;
-	// if (messages.size() > 0)
-	// 	text = messages.front();
 	char    buffer[MESSAGE_SIZE];
 	int     bytesRead;
 	while ((bytesRead = recv(_socket_user, buffer, (MESSAGE_SIZE - 1), 0)) > 0)
@@ -27,17 +25,13 @@ int		User::readMessage()
 	if (bytesRead == 0)
 		return (DISCONNECT);
 	while (text.find("\r\n") != std::string::npos)
-		// text.replace(text.find("\r\n"), 2, "\n");
 		text.replace(text.find("\r\n"), 2, " ");
-	// if (text.size() > 1)
-	// 	messages = split(text, '\n', true);
 	this->message = text;
 	return 0;
 }
 
 void	User::sendMessage(const std::string &msg) const
 {
-//	std::cout << "socket is - " << _socket_user << "\n";
 	if (msg.size() > 0)
 		send(this->_socket_user, msg.c_str(), msg.size(), 0);
 }
@@ -113,7 +107,6 @@ const std::string	&User::getAwayMessage() const
 }
 
 std::string	User::getPrefix() const {
-//	std::cout << "nick is - " << _nick << "; hostname is - " << _hostname << "\n";
 	return std::string(this->_nick + "!" + this->_user_name + "@" + this->_hostname);
 }
 

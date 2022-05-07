@@ -4,7 +4,6 @@
 class User;
 
 #include "Server.hpp"
-//#include "User.hpp"
 
 #include <string>
 #include <vector>

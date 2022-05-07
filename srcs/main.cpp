@@ -1,7 +1,4 @@
 
-// c masandilov.ru
-// ветка gvenonat
-
 #include <iostream>
 
 #include "../include/Server.hpp"

@@ -2,7 +2,7 @@
 
 #include "../include/Server.hpp"
 
-bool	work = true; // для сигналов
+bool	work = true;
 
 void    sigHandler(int signum) {
 	(void)signum;
@@ -18,12 +18,11 @@ Server::Server(const char *port, const char *pass) {
     this->_operators.push_back("ubolt");
     this->_operators.push_back("fldelena");
 
-    memset(&hints, 0, sizeof(hints));   // убедимся, что структура пуста
-    hints.ai_family     = AF_UNSPEC;    // неважно, IPv4 или IPv6
-    hints.ai_socktype   = SOCK_STREAM;  // TCP stream-sockets
-    hints.ai_flags      = AI_PASSIVE;   // заполните мой IP-адрес за меня
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family     = AF_UNSPEC;
+    hints.ai_socktype   = SOCK_STREAM;
+    hints.ai_flags      = AI_PASSIVE;
 
-    // хардкод
 	commands["PASS"] = &Server::passCmd;
 	commands["NICK"] = &Server::nickCmd;
 	commands["USER"] = &Server::userCmd;
@@ -32,14 +31,9 @@ Server::Server(const char *port, const char *pass) {
 	commands["NOTICE"] = &Server::noticeCmd;
 	commands["JOIN"] = &Server::joinCmd;
 	commands["KICK"] = &Server::kickCmd;
-	// commands["PING"] = &Server::pingCmd;
-	// commands["PONG"] = &Server::pongCmd;
-	// commands["KILL"] = &Server::killCmd;
 }
 
 Server::~Server() {
-    // Очистить _users массив 
-    // картинку вывести :)
     void();
 }
 
@@ -76,7 +70,6 @@ User	*Server::getUserByName(const std::string &name)
 	return ret;
 }
 
-// убирает сигналы типа (^D) (PA^https://github.com/levensta/IRC-ServerDSS) в сообщении как просит сабджект.
 void    Server::_ft_correct(std::vector<std::string> *str) {
     std::vector<std::string>::iterator i = str->begin();
     for ( ; i < str->end(); i++) {
@@ -97,8 +90,7 @@ int	Server::makeCommand(User &user)
 {
     std::vector<std::string> comm = split(user.getMessages(), ' ');
     _ft_correct(&comm);
-    _client_mess(user.getMessages()); // для сервера
-    // std::cout << "comm = '" << comm[0] << "' " << "len = " << comm[0].length() << std::endl;
+    _client_mess(user.getMessages());
 
 	if (user.getFlags().registered == false && comm[0] != "QUIT" && comm[0] != "PASS" \
 			&& comm[0] != "USER" && comm[0] != "NICK")
@@ -116,15 +108,9 @@ int	Server::makeCommand(User &user)
 	 		sendError(user, ERR_UNKNOWNCOMMAND, comm[0]);
 	 	}
 	 }
-    // send(clientSocket, buf, bytesReceived + 1, 0);
 	return (0);
 }
 
-/*
-*************************************************************
-** Технически стартуем сервер: Создаём, биндим и слушаем сокет
-*************************************************************
-*/
 void    Server::_initializationServ()
 {
     int status = getaddrinfo(NULL, this->_port_ch, &hints, &servinfo);
@@ -138,7 +124,7 @@ void    Server::_initializationServ()
         _print_error("error on server: socket");
         exit (EXIT_FAILURE);
     }
-    // для перезапуска и нового использования того же порта
+
 	const int trueFlag = 1;
 	if (setsockopt(this->socket_fd , SOL_SOCKET, SO_REUSEADDR, &trueFlag, sizeof(int)) < 0)
 	{
@@ -150,9 +136,9 @@ void    Server::_initializationServ()
         _print_error("error on server: bind");
         exit (EXIT_FAILURE);
     }
-    freeaddrinfo(servinfo); // и освобождаем связанный список
+    freeaddrinfo(servinfo);
     
-    if ( listen(this->socket_fd, SOMAXCONN) == -1 ) // SOMAXCONN вроде 128, default value
+    if ( listen(this->socket_fd, SOMAXCONN) == -1 )
     {
         close(this->socket_fd);
         _print_error("error on server: listen");
@@ -166,14 +152,7 @@ void	Server::deleteBrokenConnections()
 	{
 		if (_users[i]->getFlags().break_connect == true)
 		{
-			// this->nicknamesHistory.addUser(*(_users[i]));
-			// notifyUsers(*(_users[i]), ":" + _users[i]->getPrefix() + " QUIT :" + _users[i]->getQuitMessage() + "\n");
 			close(_users[i]->getSockfd());
-			// std::map<std::string, Channel *>::iterator	beg = channels.begin();
-			// std::map<std::string, Channel *>::iterator	end = channels.end();
-			// for (; beg != end; ++beg)
-			// 	if ((*beg).second->containsNickname(_users[i]->getNickname()))
-			// 		(*beg).second->disconnect(*(_users[i]));
 			delete _users[i];
 			_users.erase(_users.begin() + i);
 			_usersFD.erase(_usersFD.begin() + i);
@@ -184,10 +163,8 @@ void	Server::deleteBrokenConnections()
 
 int Server::start(void)
 {
-    // Создаём, биндим и слушаем сокет
 	_initializationServ();
 
-    // чтобы не блокировать сокет сервера
 	fcntl(this->socket_fd, F_SETFL, O_NONBLOCK);
     _system_mess("server: waiting for connections…");
 
@@ -200,12 +177,7 @@ int Server::start(void)
 */
     while (work)
     {
-        /* 
-        ************************************************************
-        ** grabConnection
-        ************************************************************
-        */
-        struct sockaddr_in their_addr; // только для accept
+        struct sockaddr_in their_addr;
         socklen_t addr_size = sizeof (their_addr);
         int clientSocket = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
         if (clientSocket >= 0)
@@ -217,7 +189,7 @@ int Server::start(void)
             pfd.events = POLLIN;
             pfd.revents = 0;
             this->_usersFD.push_back(pfd);
-            std::string name("ft_irc"); // servername
+            std::string name("ft_irc");
             this->_users.push_back(new User(clientSocket, host, name) );
         }
         /* 
@@ -226,11 +198,8 @@ int Server::start(void)
         ************************************************************
         */
 
-        // Убрать _usersFD.data() так как это C++ 11
-        // &_usersFD
         int	pret = poll(_usersFD.data(), _usersFD.size(), TIMEOUT);
         std::vector<int>	toErase;
-        // протестить > 0, так как ещё и меньше может вернуть
         if (pret != 0)
         {
             for (size_t i = 0; i < _usersFD.size(); i++)
@@ -245,24 +214,8 @@ int Server::start(void)
                 _usersFD[i].revents = 0;
             }
         }
-        /* 
-        ************************************************************
-        ** checkConnectionWithUsers
-        ************************************************************
-        */
-            // проверка соединения посылая ping
-        /* 
-        ************************************************************
-        ** deleteBrokenConnections
-        ************************************************************
-        */
+
         deleteBrokenConnections();
-        /* 
-        ************************************************************
-        ** deleteEmptyChannels
-        ************************************************************
-        */
-        // deleteEmptyChannels();
     }
     
    return (0);

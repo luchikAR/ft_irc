@@ -9,16 +9,16 @@ class Channel;
 #include <sys/socket.h>
 #include <netdb.h>
 
-#include <stdio.h>  //fprintf()
-#include <string.h> // memset()
-#include <stdlib.h> //exit()
-#include <unistd.h> // close()
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <vector>
 #include <map>
 #include <poll.h>
-#include <fcntl.h> // для работы с флагами файла
+#include <fcntl.h>
 #include <csignal>
-#include <arpa/inet.h> // переводет ip в имя
+#include <arpa/inet.h>
 
 #include "User.hpp"
 #include "utils.hpp"

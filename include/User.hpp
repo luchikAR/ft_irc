@@ -50,10 +50,8 @@ private:
     std::string _nick;
     std::string _user_name;
     std::string _real_name;
-    
-    // от levensta
-    std::string                         _hostname; // зачем?)
-    std::string                         _servername; // зачем?)
+    std::string                         _hostname;
+    std::string                         _servername;
     std::string                         message;
     std::string							awayMessage;
     flagUser                            _flagUser;
