@@ -34,6 +34,10 @@ Server::Server(const char *port, const char *pass) {
 }
 
 Server::~Server() {
+    std::map<std::string, Channel *>::const_iterator	beg = channels.begin();
+    std::map<std::string, Channel *>::const_iterator	end = channels.end();
+    for (; beg != end; ++beg)
+        delete (*beg).second;
     void();
 }
 

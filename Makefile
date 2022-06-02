@@ -14,7 +14,7 @@ SOURCEFILES=	main.cpp \
 				Channel.cpp \
 				commands/utils.cpp \
 				commands/error_modul.cpp \
-				commands/ParserCommands.cpp \
+				commands/RegistedCommands.cpp \
 				commands/sendReply.cpp \
 				commands/ChannelCommands.cpp
 

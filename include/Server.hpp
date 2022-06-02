@@ -90,6 +90,7 @@ private:
 	bool			containsChannel(const std::string &name) const;
 	bool			containsNickname(const std::string &nickname) const;
 	User*			getUserByName(const std::string &name);
+	void			sendMOTD(const User &user) const;
 
 	Server();
 	Server(const Server& copy);

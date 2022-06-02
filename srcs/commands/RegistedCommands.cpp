@@ -3,6 +3,34 @@
 #include "../../include/utils.hpp"
 
 #include <set>
+#include <fstream>
+
+void	Server::sendMOTD(const User &user) const
+{
+	// hardcode
+	// std::string motd = "Privet pupsiki !\nYou are registered!\r\n";
+	std::vector<std::string> motd;
+	std::string name = "ft_irc";
+
+	std::string		line;
+	std::ifstream	motdFile("/home/luchik/IRC_PROGECT/ft_irc/srcs/ft_irc.motd");
+	if (motdFile.is_open())
+	{
+		while (getline(motdFile, line))
+			motd.push_back(line);
+		motdFile.close();
+	}
+
+	if (motd.size() == 0)
+		sendError(user, ERR_NOMOTD);
+	else
+	{
+		sendReply(name, user, RPL_MOTDSTART, name);
+		for (size_t i = 0; i < motd.size(); ++i)
+			sendReply(name, user, RPL_MOTD, motd[i]);
+		sendReply(name, user, RPL_ENDOFMOTD);
+	}
+}
 
 int Server::passCmd(const std::vector <std::string> &msg, User &user) {
 	if (msg.empty() == true || msg.size() <= 1) {
@@ -54,7 +82,7 @@ int		Server::checkConnection(User &user)
 			if (!(user.getFlags().registered == true))
 			{
 				user.setFlag(REGISTERED);
-				user.sendMessage("You are registered!\r\n");
+				sendMOTD(user);
 			}
 		}
 		else
