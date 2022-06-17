@@ -10,7 +10,7 @@ void	Server::sendMOTD(const User &user) const
 	// hardcode
 	// std::string motd = "Privet pupsiki !\nYou are registered!\r\n";
 	std::vector<std::string> motd;
-	std::string name = "ft_irc";
+	std::string name = this->_name_server;
 
 	std::string		line;
 	std::ifstream	motdFile("/home/luchik/IRC_PROGECT/ft_irc/srcs/ft_irc.motd");
@@ -82,6 +82,10 @@ int		Server::checkConnection(User &user)
 			if (!(user.getFlags().registered == true))
 			{
 				user.setFlag(REGISTERED);
+				sendReply(this->_name_server, user, RPL_WELCOME, "Welcome to the Internet Relay Network!");
+				sendReply(this->_name_server, user, RPL_YOURHOST, "Your host is <" + this->_name_server + "> running version <v_1.1>");
+				sendReply(this->_name_server, user, RPL_CREATED, "This server was created... local now :)");
+				sendReply(this->_name_server, user, RPL_MYINFO, "info about server: top secret");
 				sendMOTD(user);
 			}
 		}

@@ -125,6 +125,11 @@
 #define RPL_ADMINLOC2			258
 #define RPL_ADMINEMAIL			259
 
+#define RPL_WELCOME				001
+#define RPL_YOURHOST			002
+#define RPL_CREATED				003
+#define RPL_MYINFO				004
+
 int		sendError(const User &user, int err, const std::string &arg1 = "", const std::string &arg2 = "");
 int		sendReply(const std::string &from, const User &user, int rpl, \
 				const std::string &arg1 = "",const std::string &arg2 = "", \

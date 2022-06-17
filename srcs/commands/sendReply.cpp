@@ -8,10 +8,24 @@ int		sendReply(const std::string &from, const User &user, int rpl, \
 {
 	std::string	msg = ":" + from + " ";
 	std::stringstream	ss;
+	if (rpl < 10)
+		msg += "00";
 	ss << rpl;
 	msg += ss.str() + " " + user.getNickname() + " ";
 	switch (rpl)
 	{
+	case RPL_WELCOME:
+		msg += ":" + arg1 + "\r\n";
+		break;
+	case RPL_YOURHOST:
+		msg += ":" + arg1 + "\r\n";
+		break;
+	case RPL_CREATED:
+		msg += ":" + arg1 + "\r\n";
+		break;
+	case RPL_MYINFO:
+		msg += ":" + arg1 + "\r\n";
+		break;
 	case RPL_USERHOST:
 		msg += ":" + arg1 + "\r\n";
 		break;
@@ -239,6 +253,7 @@ int		sendReply(const std::string &from, const User &user, int rpl, \
 		msg += "UNKNOWN REPLY\r\n";
 		break;
 	}
+    std::cerr << CYAN << "[SERVER->CLIENT]: " << GREEN << msg << RESET << "\r\n";
 	send(user.getSockfd(), msg.c_str(), msg.size(), MSG_NOSIGNAL);
 	return 0;
 }

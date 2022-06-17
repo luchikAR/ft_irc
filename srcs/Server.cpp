@@ -13,7 +13,7 @@ Server::Server(const char *port, const char *pass) {
     this->_port = atoi(port);
 	this->_pass = std::string(pass);
     this->_port_ch = port;
-    this->_name_server = "ft_IRC";
+    this->_name_server = "localhost"; // was ft_irc
     this->_operators.push_back("gvenonat");
     this->_operators.push_back("ubolt");
     this->_operators.push_back("fldelena");
@@ -193,7 +193,7 @@ int Server::start(void)
             pfd.events = POLLIN;
             pfd.revents = 0;
             this->_usersFD.push_back(pfd);
-            std::string name("ft_irc");
+            std::string name(this->_name_server);
             this->_users.push_back(new User(clientSocket, host, name) );
         }
         /* 
