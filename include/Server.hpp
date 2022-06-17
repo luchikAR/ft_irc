@@ -91,6 +91,8 @@ private:
 	bool			containsNickname(const std::string &nickname) const;
 	User*			getUserByName(const std::string &name);
 	void			sendMOTD(const User &user) const;
+	int 			pingCmd(const std::vector<std::string> &msg, User &user);
+	int 			pongCmd(const std::vector<std::string> &msg, User &user);
 
 	Server();
 	Server(const Server& copy);

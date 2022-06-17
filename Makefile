@@ -5,18 +5,18 @@ YELLOW	=\033[1;33m
 CYAN	=\033[1;36m
 RESET	=\033[0m
 
-
 NAME= ircserv
 
 SOURCEFILES=	main.cpp \
-				Server.cpp \
-				User.cpp \
-				Channel.cpp \
-				commands/utils.cpp \
-				commands/error_modul.cpp \
-				commands/RegistedCommands.cpp \
-				commands/sendReply.cpp \
-				commands/ChannelCommands.cpp
+				server/Server.cpp \
+				server/RegistedCommands.cpp \
+				server/ping_pong.cpp \
+				user/User.cpp \
+				user/error_modul.cpp \
+				user/sendReply.cpp \
+				channel/Channel.cpp \
+				channel/ChannelCommands.cpp \
+				utils_commands/utils.cpp
 
 #BOTFOLDER = bot/
 
@@ -33,8 +33,13 @@ OSOURCE= $(addprefix $(OSOURCEFOLDER), $(SOURCEFILES:.cpp=.o))
 all:  $(NAME) #bot
 
 $(OSOURCEFOLDER):
+	@printf "$(YELLOW)"
 	mkdir objects
-	mkdir objects/commands
+	mkdir objects/server
+	mkdir objects/user
+	mkdir objects/channel
+	mkdir objects/utils_commands
+	@printf "$(RESET)"
 
 $(OSOURCEFOLDER)%.o: $(SOURCEFOLDER)%.cpp
 	@printf "$(GREEN)"
@@ -45,7 +50,9 @@ $(OSOURCEFOLDER)%.o: $(SOURCEFOLDER)%.cpp
 #	$(MAKE) -C $(BOTFOLDER) all
 
 $(NAME): $(OSOURCEFOLDER) $(OSOURCE)
+	@printf "$(GREEN)"
 	clang++ $(OSOURCE) -o $(NAME)
+	@printf "$(RESET)"
 
 clean:
 #	$(MAKE) -C $(BOTFOLDER) clean

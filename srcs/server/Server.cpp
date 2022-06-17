@@ -31,6 +31,8 @@ Server::Server(const char *port, const char *pass) {
 	commands["NOTICE"] = &Server::noticeCmd;
 	commands["JOIN"] = &Server::joinCmd;
 	commands["KICK"] = &Server::kickCmd;
+    commands["PING"] = &Server::pingCmd;
+    commands["PONG"] = &Server::pongCmd;
 }
 
 Server::~Server() {
