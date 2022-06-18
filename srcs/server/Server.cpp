@@ -33,6 +33,7 @@ Server::Server(const char *port, const char *pass) {
 	commands["KICK"] = &Server::kickCmd;
     commands["PING"] = &Server::pingCmd;
     commands["PONG"] = &Server::pongCmd;
+    commands["BOT"] = &Server::botCmd;
 }
 
 Server::~Server() {
@@ -223,7 +224,6 @@ int Server::start(void)
 
         deleteBrokenConnections();
     }
-    
    return (0);
 }
 
@@ -235,4 +235,20 @@ bool Server::nickIsExist(const std::string nick) {
 			return (true);
 	}
 	return (false);
+}
+
+int Server::botCmd(const std::vector<std::string> &msg, User &user) {
+    std::vector<std::string> facts;
+	std::string buf = msg[0]; 
+	facts.push_back("Самая крупная жемчужина в мире достигает 6 килограммов в весе.");
+	facts.push_back("В Антарктиде существует единственная река – Оникс, она течет всего 60 дней в году.");
+	facts.push_back("Ежедневно 60 человек становятся миллионерами.");
+	facts.push_back("На Юпитере регулярно идут алмазные дожди.");
+	facts.push_back("В мире всего 7% левшей.");
+	facts.push_back("Алмазы могут гореть.");
+	facts.push_back("Земля делает полный оборот вокруг своей оси за 23 часа 56 минут и 4 секунды.");
+	int number = rand() % 10;
+	if (number > 2) { number -= 2; }	
+	user.sendMessage(facts[number]);
+	return 0;
 }

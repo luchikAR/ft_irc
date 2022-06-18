@@ -259,6 +259,6 @@ int		sendReply(const std::string &from, const User &user, int rpl, \
 	else
 		std::cerr << CYAN << "[SERVER->CLIENT]: " << GREEN << msg << RESET << "\n";
 		
-	send(user.getSockfd(), msg.c_str(), msg.size(), MSG_NOSIGNAL);
+	send(user.getSockfd(), msg.c_str(), msg.size(), 0);
 	return 0;
 }
