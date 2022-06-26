@@ -33,7 +33,6 @@ Server::Server(const char *port, const char *pass) {
 	commands["KICK"] = &Server::kickCmd;
     commands["PING"] = &Server::pingCmd;
     commands["PONG"] = &Server::pongCmd;
-    commands["BOT"] = &Server::botCmd;
 }
 
 Server::~Server() {
@@ -224,6 +223,7 @@ int Server::start(void)
 
         deleteBrokenConnections();
     }
+    
    return (0);
 }
 
@@ -235,6 +235,7 @@ bool Server::nickIsExist(const std::string nick) {
 			return (true);
 	}
 	return (false);
+<<<<<<< HEAD
 }
 
 int Server::botCmd(const std::vector<std::string> &msg, User &user) {
@@ -252,4 +253,6 @@ int Server::botCmd(const std::vector<std::string> &msg, User &user) {
     facts.push_back("Альбатрос может спать прямо во время полета. Действует птица по тому же принципу, что и дельфин: в полете у альбатроса отдыхает одна половина мозга, а вторая следит, чтобы он удерживался в воздухе и не залетел в турбину самолета.");
 	user.sendMessage(facts[rand() % 10]);
 	return 0;
+=======
+>>>>>>> parent of dfc93d0... добавил набросок для бота
 }

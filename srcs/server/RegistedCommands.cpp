@@ -13,7 +13,7 @@ void	Server::sendMOTD(const User &user) const
 	std::string name = this->_name_server;
 
 	std::string		line;
-	std::ifstream	motdFile("~/ft_irc.motd");
+	std::ifstream	motdFile("/home/luchik/IRC_PROGECT/ft_irc/srcs/ft_irc.motd");
 	if (motdFile.is_open())
 	{
 		while (getline(motdFile, line))

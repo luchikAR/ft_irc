@@ -93,8 +93,6 @@ private:
 	void			sendMOTD(const User &user) const;
 	int 			pingCmd(const std::vector<std::string> &msg, User &user);
 	int 			pongCmd(const std::vector<std::string> &msg, User &user);
-	int				botCmd(const std::vector<std::string> &msg, User &user);
-
 
 	Server();
 	Server(const Server& copy);
