@@ -74,7 +74,7 @@ private:
 
 	void	_print_error(std::string str) const;
 	void	_system_mess(std::string str) const;
-	void	_client_mess(std::string str) const;
+	void	_client_mess(std::string str, User const &user, std::vector<std::string> comm) const;
 
 	// command - work with user
 	int				connectToChannel(const User &user, const std::string &name, const std::string &key);

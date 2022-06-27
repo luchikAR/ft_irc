@@ -46,16 +46,16 @@ struct flagUser
 
 class User {
 private:
-    std::string _pass;
-    std::string _nick;
-    std::string _user_name;
-    std::string _real_name;
-    std::string                         _hostname;
-    std::string                         _servername;
-    std::string                         message;
-    std::string							awayMessage;
-    flagUser                            _flagUser;
-	std::vector<const Channel *>		channels;
+    std::string                     _pass;
+    std::string                     _nick;
+    std::string                     _user_name;
+    std::string                     _real_name;
+    std::string                     _hostname;
+    std::string                     _servername;
+    std::string                     message;
+    std::string						awayMessage;
+    flagUser                        _flagUser;
+	std::vector<const Channel *>    channels;
 
     int         _socket_user;
     int         _status;

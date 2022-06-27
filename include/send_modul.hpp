@@ -5,6 +5,13 @@
 #include <iostream>
 #include <sstream>
 
+#define RED		"\033[1;31m"
+#define GREEN	"\033[1;32m"
+#define YELLOW	"\033[1;33m"
+#define PURPLE	"\033[1;35m"
+#define CYAN	"\033[1;36m"
+#define RESET	"\033[0m"
+
 #define ERR_NOSUCHNICK			401
 #define ERR_NOSUCHSERVER		402
 #define ERR_NOSUCHCHANNEL		403
@@ -131,6 +138,7 @@
 #define RPL_MYINFO				004
 
 int		sendError(const User &user, int err, const std::string &arg1 = "", const std::string &arg2 = "");
+void    _send_from_server_log(std::string msg, const User &user, int id);
 int		sendReply(const std::string &from, const User &user, int rpl, \
 				const std::string &arg1 = "",const std::string &arg2 = "", \
 				const std::string &arg3 = "",const std::string &arg4 = "", \

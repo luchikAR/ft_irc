@@ -253,12 +253,17 @@ int		sendReply(const std::string &from, const User &user, int rpl, \
 		msg += "UNKNOWN REPLY\r\n";
 		break;
 	}
-	// for log on server
-	if (rpl == RPL_MOTD)
-		std::cerr << CYAN << "[SERVER->CLIENT]: " << GREEN << "[was send MOTD]" << RESET << "\n";
-	else
-		std::cerr << CYAN << "[SERVER->CLIENT]: " << GREEN << msg << RESET << "\n";
+
+	_send_from_server_log(msg, user, RPL_MOTD);
 		
 	send(user.getSockfd(), msg.c_str(), msg.size(), MSG_NOSIGNAL);
 	return 0;
+}
+
+void	_send_from_server_log(std::string msg, const User &user, int id) {
+	// for log on server
+	if (id == RPL_MOTD)
+		std::cerr << CYAN << "[SERVER->" + user.getNickname() + "]: " << GREEN << "[was send MOTD]" << RESET << "\n";
+	else
+		std::cerr << CYAN << "[SERVER->" + user.getNickname() + "]: " << GREEN << msg << RESET << "\n";
 }
