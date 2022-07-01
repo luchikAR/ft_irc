@@ -7,8 +7,6 @@
 
 void	Server::sendMOTD(const User &user) const
 {
-	// hardcode
-	// std::string motd = "Privet pupsiki !\nYou are registered!\r\n";
 	std::vector<std::string> motd;
 	std::string name = this->_name_server;
 
@@ -142,6 +140,8 @@ int 	Server::privmsgCmd(const std::vector<std::string> &msg, User &user)
 	{
 		if ((*it)[0] == '#' || (*it)[0] == '&')
 		{
+			std::cerr << PURPLE << "[" + user.getNickname() + " -> " + user.getUsername() + "]: " << RESET << ":" \
+				+ user.getPrefix() + "!" + user.getUsername() + "127.0.0.1" + " " + msg[0] + " " + *it + " " + message + "\n";
 			Channel *receiverChannel = this->channels[*it];
 			if (receiverChannel->getFlags().moderated == true && (!receiverChannel->isOperator(user) && !receiverChannel->isSpeaker(user)))
 				sendError(user, ERR_CANNOTSENDTOCHAN, *it);
@@ -150,7 +150,10 @@ int 	Server::privmsgCmd(const std::vector<std::string> &msg, User &user)
 		}
 		else
 		{
-				this->getUserByName(*it)->sendMessage(":" + user.getPrefix() + " " + msg[0] + " " + *it + " :" + message + "\n");
+			std::string send_msg = ":" + user.getPrefix() + " " + msg[0] + " " + *it + " " + message + "\r\n";
+			
+			std::cerr << PURPLE << "[" + user.getNickname() + " -> " + user.getUsername() + "]: " << RESET << send_msg << "\n";
+			this->getUserByName(*it)->sendMessage(send_msg);
 		}
 	}
 	return 0;

@@ -10,8 +10,9 @@ User::~User() { }
 int		User::readMessage()
 {
 	std::string	text;
-	char    buffer[MESSAGE_SIZE];
-	int     bytesRead;
+	char    	buffer[MESSAGE_SIZE];
+	int     	bytesRead;
+	
 	while ((bytesRead = recv(_socket_user, buffer, (MESSAGE_SIZE - 1), 0)) > 0)
 	{
 		buffer[bytesRead] = 0;
@@ -27,6 +28,7 @@ int		User::readMessage()
 	while (text.find("\r\n") != std::string::npos)
 		text.replace(text.find("\r\n"), 2, " ");
 	this->message = text;
+	std::cerr << YELLOW << "[reading]: " << RESET << text << "\n";
 	return 0;
 }
 

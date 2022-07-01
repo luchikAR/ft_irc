@@ -48,11 +48,12 @@ void Server::_print_error(std::string str) const {
 }
 
 void Server::_system_mess(std::string str) const {
-    std::cerr << CYAN << "[SERVER]: " << GREEN << str << RESET << "\r\n";
+    std::cerr << CYAN << "[SERVER]: " << GREEN << str << RESET << "\n";
 }
 
-void Server::_client_mess(std::string str) const {
-    std::cerr << PURPLE << "[CLIENT]: " << RESET << str << "\r\n";
+void Server::_client_mess(std::string str, User const &user, std::vector<std::string> comm) const {
+    if (comm[0] != "PRIVMSG")
+        std::cerr << PURPLE << "[" + user.getNickname() + "]: " << RESET << str << "\n";
 }
 
 bool	Server::containsNickname(const std::string &nickname) const
@@ -79,7 +80,7 @@ User	*Server::getUserByName(const std::string &name)
 void    Server::_ft_correct(std::vector<std::string> *str) {
     std::vector<std::string>::iterator i = str->begin();
     for ( ; i < str->end(); i++) {
-        for (char comp = 1; comp <= 31; comp++) {
+        for (char comp = 2; comp <= 31; comp++) {
             while (i->find(comp) != std::string::npos)
 		        i->replace(i->find(comp), 1, "");
         }
@@ -96,7 +97,7 @@ int	Server::makeCommand(User &user)
 {
     std::vector<std::string> comm = split(user.getMessages(), ' ');
     _ft_correct(&comm);
-    _client_mess(user.getMessages());
+    _client_mess(user.getMessages(), user, comm);
 
 	if (user.getFlags().registered == false && comm[0] != "QUIT" && comm[0] != "PASS" \
 			&& comm[0] != "USER" && comm[0] != "NICK")
