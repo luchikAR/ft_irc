@@ -10,7 +10,7 @@ int		sendError(const User &user, int err, const std::string &arg1, const std::st
 	{
 	case ERR_NOSUCHNICK:
 	{
-		std::cout << "USER NAME IS " << user.
+		std::cout << "USER NAME IS " << user.getNickname() << "\n";
 		msg += " " + arg1 + " :No such nick/channel\n";
 		break;
 	}

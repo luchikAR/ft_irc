@@ -124,6 +124,8 @@ int 	Server::privmsgCmd(const std::vector<std::string> &msg, User &user)
 
 	while (receivers.size() > 0)
 	{
+		std::cout << "I'm in cycle now\n";
+		
 		if (uniqReceivers.find(receivers.front()) != uniqReceivers.end())
 			return (sendError(user, ERR_TOOMANYTARGETS, receivers.front()));
 		if (receivers.front()[0] == '#' || receivers.front()[0] == '&')
