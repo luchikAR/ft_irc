@@ -66,8 +66,10 @@ int		Server::kickCmd(const std::vector<std::string> &msg, User &user)
 		sendError(user, ERR_CHANOPRIVSNEEDED, msg[1]);
 	else if (!channels.at(msg[1])->containsNickname(user.getNickname()))
 		sendError(user, ERR_NOTONCHANNEL, msg[1]);
-	else if (!containsNickname(msg[2]) )
+	else if (!containsNickname(msg[2]) ) {
+		std::cout << "kickCmd send error\n";
 		sendError(user, ERR_NOSUCHNICK, msg[2]);
+	}
 	else if (!channels.at( msg[1] )->containsNickname( msg[2] ) )
 		sendError(user, ERR_USERNOTINCHANNEL, msg[2], msg[1]);
 	else

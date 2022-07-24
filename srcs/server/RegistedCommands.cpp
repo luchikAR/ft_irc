@@ -117,8 +117,10 @@ int 	Server::privmsgCmd(const std::vector<std::string> &msg, User &user)
 	}
 
 	if (msg[0] == "NOTICE" && (receivers.size() > 1 \
-	|| receivers.front()[0] == '#' || receivers.front()[0] == '&'))
+	|| receivers.front()[0] == '#' || receivers.front()[0] == '&')) {
+		std::cout << "I'm out on 121 send error\n";
 		return (sendError(user, ERR_NOSUCHNICK, msg[1]));
+	}
 
 	while (receivers.size() > 0)
 	{
@@ -127,12 +129,18 @@ int 	Server::privmsgCmd(const std::vector<std::string> &msg, User &user)
 		if (receivers.front()[0] == '#' || receivers.front()[0] == '&')
 		{
 			if (!this->containsChannel(receivers.front()))
-				return (sendError(user, ERR_NOSUCHNICK, receivers.front()));
+			{
+				std::cout << "I'm out on 133 send error\n";
+				return (sendError(user, ERR_NOSUCHNICK, msg[1]));
+			}
 			if (!this->channels[receivers.front()]->containsNickname(user.getNickname()))
 				return (sendError(user, ERR_CANNOTSENDTOCHAN, receivers.front()));
 		}
 		else if (!this->containsNickname(receivers.front()))
+		{
+			std::cout << "I'm out on 141 send error\n";
 			return (sendError(user, ERR_NOSUCHNICK, msg[1]));
+		}
 		uniqReceivers.insert(receivers.front());
 		receivers.erase(receivers.begin());
 	}

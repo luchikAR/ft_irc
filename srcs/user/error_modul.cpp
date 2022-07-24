@@ -9,8 +9,11 @@ int		sendError(const User &user, int err, const std::string &arg1, const std::st
 	switch (err)
 	{
 	case ERR_NOSUCHNICK:
+	{
+		std::cout << "USER NAME IS " << user.
 		msg += " " + arg1 + " :No such nick/channel\n";
 		break;
+	}
 	case ERR_NOSUCHSERVER:
 		msg += " " + arg1 + " :No such server\n";
 		break;

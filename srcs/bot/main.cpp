@@ -14,8 +14,6 @@
 static void mainError() {
 		std::cerr << "Usage: ./bot <bot_name> <port> <password>" << std::endl;
 		std::cerr << "Available bot types:" << std::endl;
-//		std::cerr << "	weather" << std::endl;
-//		std::cerr << "	apod" << std::endl;
 		std::cerr << "	convert" << std::endl;
 }
 
@@ -32,11 +30,6 @@ int main(int argc, char* argv[]) {
 		std::string password = argv[3];
 		
 		Bot* bot;
-//		if ("weather" == bot_name)
-//			bot = new WeatherBot(port, password);
-//		else if ("apod" == bot_name)
-//			bot = new ApodBot(port, password);
-//		else
 		if ("convert" == bot_name)
 			bot = new ConvertBot(port, password);
 		else {
