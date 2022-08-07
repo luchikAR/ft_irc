@@ -12,9 +12,7 @@ Bot::Bot(std::string name, int port, std::string password) : _name(name) , _stat
 
 Bot::~Bot() {}
 
-
 void	Bot::run() {
-	std::cout << "I'm in method run\n";
 	while(true) {
 		struct pollfd fds;
 		/*
@@ -39,11 +37,10 @@ void	Bot::run() {
 		}
 		if (r > 0) {
 			if (fds.revents == POLLIN) {
-				std::cout << "I'm going in method readMsg\n";
 				_readMsg();
 			}
 			else if (fds.revents == POLLOUT) {
-				std::cout << "I'm going in method sendMsg\n";
+				sleep(1);
 				_sendMsg();
 			}
 			else if (fds.revents & (POLLERR|POLLHUP)) { //Произошла ошибка | "Положили трубку"
@@ -94,7 +91,6 @@ void	Bot::_login(std::string password) {
 
 void	Bot::_sendMsg() {
 	std::cout << "sending..." << std::endl;
-	std::cout << "I'm in method sendMsg\n";
 	if (_msgQueue.empty()) {
 		_status = READ;
 		return;
@@ -110,7 +106,6 @@ void	Bot::_sendMsg() {
 
 void	Bot::_readMsg() {
 	std::cout << "reading..." << std::endl;
-	std::cout << "I'm in method readMsg\n";
 	char buff[BUFF_SIZE + 1];
  	bzero(buff, BUFF_SIZE + 1);
 	int r = recv(_fd, buff, BUFF_SIZE, 0);
@@ -124,7 +119,6 @@ void	Bot::_readMsg() {
 }
 
 void Bot::_handleMsg(std::string msg) {
-	std::cout << "I'm in handleMsg\n";
 	_msgBuff.append(msg);
 	size_t i = 0;
     while (true) {
@@ -172,7 +166,6 @@ std::vector<std::string> split(std::string & s)
 }
 
 void Bot::_botMsg(Message &message) {
-	std::cout << "I'm method botMsg\n";
 	std::string text;
 	std::string prefix = message.getPrefix();
 	int i = prefix.find("!");

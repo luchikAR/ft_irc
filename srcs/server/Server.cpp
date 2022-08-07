@@ -59,8 +59,7 @@ void Server::_client_mess(std::string str, User const &user, std::vector<std::st
 bool	Server::containsNickname(const std::string &nickname) const
 {
 	size_t	usersCount = _users.size();
-	for (size_t i = 0; i < usersCount; i++)
-	{
+	for (size_t i = 0; i < usersCount; i++) {
 		if (_users[i]->getNickname() == nickname)
 			return (true);
 	}

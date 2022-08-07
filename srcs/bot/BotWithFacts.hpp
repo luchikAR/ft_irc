@@ -4,16 +4,16 @@
 # include "Bot.hpp"
 # include <limits.h>
 
-class ConvertBot : public Bot {
+class BotWithFacts : public Bot {
 
 public:
-	ConvertBot(int port, std::string password);
-	~ConvertBot();
+	BotWithFacts(int port, std::string password);
+	~BotWithFacts();
 
 private:
-	ConvertBot();
-	ConvertBot(const ConvertBot & copy);
-	ConvertBot &operator=(const ConvertBot & copy);
+	BotWithFacts();
+	BotWithFacts(const BotWithFacts & copy);
+	BotWithFacts &operator=(const BotWithFacts & copy);
 
 	std::string	_botReply(std::string msg);
 	std::string	_converter(long src, int toSystem);
