@@ -4,7 +4,7 @@ CC = clang++
 CFLAGS = -Wall -Wextra -g -std=c++98
 
 MAIN = main
-MODELS = Bot ConvertBot
+MODELS = Bot BotWithFacts
 MESSAGE = Message
 
 SRCS = $(addsuffix .cpp, $(MAIN)) \
